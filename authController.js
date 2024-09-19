@@ -9,10 +9,13 @@ exports.login = async (req, res) => {
         const result = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
         console.log("Usuario encontrado:", result.rows.length > 0);
         if (result.rows.length > 0) {
-            const isValid = await bcrypt.compare(password, result.rows[0].password);
+            const user = result.rows[0];
+            const isValid = await bcrypt.compare(password, user.password);
             console.log("Contraseña válida:", isValid);
             if (isValid) {
-                res.redirect('/welcome');
+                req.session.userId = user.id;  // Establecer el ID del usuario en la sesión
+                console.log("Sesión establecida para usuario ID:", user.id);
+                res.redirect('/main');  // Redirigir al usuario a la página principal
             } else {
                 res.status(401).send('Contraseña incorrecta');
             }
@@ -24,5 +27,3 @@ exports.login = async (req, res) => {
         res.status(500).send('Error al iniciar sesión');
     }
 };
-
-

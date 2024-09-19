@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const session = require('express-session');
 const path = require('path');
 const app = express();
 
@@ -7,19 +8,21 @@ const authRoutes = require('./routes/authRoutes');
 const mainRoutes = require('./routes/mainRoutes');
 const coordinatesRoutes = require('./routes/coordinatesRoutes');
 
+// Middleware para sesiones
+app.use(session({
+    secret: 'f3b8b1a8b0315bc094341302b7e3d761c8ee78944557f8a36283c9efb82694505718bfebdd8b073558b9c8af4ede0c22342934d95a620bc7',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: process.env.NODE_ENV === 'production' }  // Asegura las cookies solo en producción
+}));
+
+
 // Middleware para servir archivos estáticos
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Middleware para parsear cuerpos de solicitud JSON
+// Middleware para parsear cuerpos de solicitud JSON y URL-encoded
 app.use(express.urlencoded({ extended: true }));
-
-exports.login = async (req, res) => {
-    console.log("Datos recibidos:", req.body); // Esto mostrará los datos recibidos
-    const { username, password } = req.body;
-
-    // Aquí continúa tu lógica de autenticación
-};
-
+app.use(express.json());
 
 // Redirigir todas las solicitudes a la raíz al login
 app.get('/', (req, res) => {
@@ -34,11 +37,32 @@ app.get('/login', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'login.html'));
 });
 
-// Rutas principales
-app.use(mainRoutes);
+// Middleware para verificar la autenticación
+function isAuthenticated(req, res, next) {
+    if (req.session.userId) {
+        next();
+    } else {
+        res.redirect('/login');
+    }
+}
 
-app.use(express.urlencoded({ extended: true }));  // Middleware para parsear formularios
 
+// Rutas principales protegidas por autenticación
+app.use('/main', isAuthenticated, mainRoutes);
+
+// Ruta para cerrar sesión
+app.post('/logout', (req, res) => {
+    req.session.destroy(err => {
+        if (err) {
+            console.error('Error al cerrar sesión:', err);
+            return res.status(500).send('No se pudo cerrar la sesión');
+        }
+        res.redirect('/login');
+    });
+});
+
+// Rutas de coordenadas
+app.use('/api/coordinates', isAuthenticated, coordinatesRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

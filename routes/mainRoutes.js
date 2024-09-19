@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
+const path = require('path');  // Asegúrate de que esta línea está presente
 
-// Ruta de bienvenida
-router.get('/welcome', (req, res) => {
-    res.send('¡Bienvenido a DISMO-APP!');
+router.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, '../public', 'main.html'));  // Asegúrate de que la ruta está bien escrita
 });
 
 module.exports = router;

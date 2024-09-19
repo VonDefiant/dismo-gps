@@ -1,0 +1,92 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    font-family: 'Arial', sans-serif;
+    box-sizing: border-box;
+    overflow-x: hidden;
+}
+
+header {
+    background-color: #1d3f7d; /* Azul sólido para el fondo del encabezado */
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 10px 20px;
+    height: 5vh; /* 5% del alto total de la vista */
+    width: 100%;
+    position: relative;
+}
+
+.barra-amarilla {
+    position: absolute;
+    top: 0; /* Coloca la barra amarilla en la parte superior */
+    left: 0;
+    right: 0;
+    height: 10px; /* Altura de la barra amarilla */
+    background-color: #fab925; /* Amarillo */
+}
+
+#menu-toggle {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 30px;
+    cursor: pointer;
+    margin-right: 20px;
+}
+
+#map {
+    width: 100%;
+    height: 95vh; /* Ajusta la altura del mapa */
+}
+
+/* Estilos para el menú lateral */
+.sidebar {
+    width: 250px; /* Ancho del menú lateral */
+    height: 100vh; /* Altura completa de la vista */
+    background-color: #1d3f7d; /* Color azul del encabezado */
+    position: fixed; /* Fijar el menú lateral */
+    left: -250px; /* Inicialmente oculto */
+    top: 0;
+    transition: left 0.3s; /* Transición suave para mostrar/ocultar */
+    z-index: 1001; /* Asegurarse de que esté sobre otros contenidos */
+}
+
+.menu {
+    list-style: none;
+    padding: 20px 0; /* Espaciado interno */
+}
+
+.menu li a {
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    display: block; /* Ocupar el ancho completo del menú */
+    transition: background-color 0.3s; /* Transición suave para el hover */
+}
+
+.menu li a:hover {
+    background-color: #fab925; /* Amarillo al pasar el mouse */
+    color: #1d3f7d; /* Texto azul al pasar el mouse */
+}
+
+.sidebar-footer {
+    background-color: #fab925; /* Barra amarilla en el pie ahora al tope */
+    color: black;
+    text-align: center;
+    padding: 5px 0;
+    position: absolute;
+    top: 0; /* Modificado de bottom a top */
+    width: 100%;
+}
+
+.sidebar-logo {
+    display: block; /* Hace que la imagen sea un bloque para permitir centrado */
+    margin: 20px auto; /* Aumenta el margen superior para bajar la imagen */
+    max-width: 80%; /* Limita el tamaño de la imagen */
+    height: auto; /* Mantiene la proporción de la imagen */
+}
+

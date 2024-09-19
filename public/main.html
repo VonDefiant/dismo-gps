@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DISMO GPS</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+    <link rel="stylesheet" href="/css/leaflet.css">
+</head>
+<body>
+    <header>
+        <button id="menu-toggle">&#9776;</button>
+        <div class="barra-amarilla"></div>
+    </header>
+    <div id="map" style="height: 90vh;"></div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="/scripts/main.js"></script>
+    <script src="/scripts/menulateral.js"></script>
+    <div id="sidebar" class="sidebar">
+        <!-- Imagen del logotipo o cualquier otra imagen representativa -->
+        <img src="logo.png" alt="Logo" class="sidebar-logo">
+    
+        <ul class="menu">
+            <li><a href="#">Reconstrucción del recorrido</a></li>
+            <li><a href="#" onclick="logout()">Cerrar Sesión</a></li>
+        </ul>
+        <div class="sidebar-footer">
+        </div>
+        <script src="/scripts/logout.js"></script> 
+    </div>
+    
+</body>
+</html>
+
+
