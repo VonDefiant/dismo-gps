@@ -17,7 +17,6 @@ router.post('/coordinates', async (req, res) => {
     }
 });
 
-// Ruta para obtener las últimas coordenadas por id_ruta
 router.get('/latest-coordinates', async (req, res) => {
     try {
         const result = await pool.query(`
