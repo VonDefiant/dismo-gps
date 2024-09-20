@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }).addTo(map);
 
     function updateMarkers() {
-        fetch('/api/coordinates/latest-coordinates')
+        fetch('/coordinates/latest-coordinates')
             .then(response => response.json())
             .then(data => {
                 map.eachLayer(function(layer) {

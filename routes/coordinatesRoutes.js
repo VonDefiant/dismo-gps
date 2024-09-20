@@ -14,7 +14,7 @@ router.post('/coordinates', async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).send('Error al guardar las coordenadas');
-    }
+    }   
 });
 
 router.get('/latest-coordinates', async (req, res) => {
@@ -35,6 +35,9 @@ router.get('/latest-coordinates', async (req, res) => {
     }
 });
 
-
+// Ruta GET para pruebas
+router.get('/', (req, res) => {
+    res.status(200).send('GET request to the coordinates route is working!');
+});
 
 module.exports = router;

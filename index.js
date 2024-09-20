@@ -15,7 +15,6 @@ app.use(session({
     saveUninitialized: true,
 }));
 
-
 // Middleware para servir archivos estáticos
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -29,6 +28,7 @@ app.get('/', (req, res) => {
 });
 
 // Rutas de autenticación
+app.set('trust proxy', 1);
 app.use('/auth', authRoutes);
 
 // Ruta para mostrar el formulario de login
@@ -38,8 +38,14 @@ app.get('/login', (req, res) => {
 
 // Middleware para verificar la autenticación
 function isAuthenticated(req, res, next) {
+    // Permitir POST a /coordinates sin autenticación
+    if (req.path === '/coordinates' && req.method === 'POST') {
+        return next();
+    }
+
+    // Para todas las demás rutas, verificar la sesión
     if (req.session.userId) {
-        next();
+        return next();
     } else {
         res.redirect('/login');
     }
@@ -61,9 +67,9 @@ app.post('/logout', (req, res) => {
 });
 
 // Rutas de coordenadas
-app.use('/api/coordinates', isAuthenticated, coordinatesRoutes);
+app.use('/coordinates', coordinatesRoutes);
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5006;
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en el puerto ${PORT}`);
 });
