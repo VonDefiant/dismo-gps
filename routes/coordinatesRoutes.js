@@ -5,10 +5,6 @@ const pool = require('../db'); // Asegúrate de que el pool está configurado co
 // Ruta para insertar nuevas coordenadas
 router.post('/', async (req, res) => {
     const { latitude, longitude, timestamp, isSuspicious, id_ruta } = req.body;
-
-    // Registrar los datos que están llegando para verificar
-    console.log('Datos recibidos:', req.body);
-
     try {
         const result = await pool.query(
             'INSERT INTO coordinates (latitude, longitude, timestamp, vpn_validation, id_ruta) VALUES ($1, $2, $3, $4, $5) RETURNING *',
@@ -16,10 +12,11 @@ router.post('/', async (req, res) => {
         );
         res.status(201).json(result.rows[0]);
     } catch (err) {
-        console.error('Error al guardar las coordenadas:', err);
+        console.error(err);
         res.status(500).send('Error al guardar las coordenadas');
     }   
 });
+
 
 // Ruta para obtener las últimas coordenadas
 router.get('/latest-coordinates', async (req, res) => {
