@@ -6,6 +6,23 @@
     <title>DISMO GPS</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
     <link rel="stylesheet" href="/css/leaflet.css">
+    <!-- Cargar el CSS del modal dinámico de reconstrucción -->
+    <link rel="stylesheet" href="/css/reconstruccion.css">
+    <style>
+        /* Estilos para el contenedor donde cargaremos el menú */
+        #reconstruccionContainer {
+            position: fixed;
+            z-index: 10000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none; /* Oculto inicialmente */
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -14,23 +31,30 @@
     </header>
     <div id="map" style="height: 90vh;"></div>
 
+    <!-- Contenedor donde se cargará el menú de reconstrucción -->
+    <div id="reconstruccionContainer"></div>
+
+    <!-- Cargar Leaflet y los scripts -->
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="/scripts/main.js"></script>
     <script src="/scripts/menulateral.js"></script>
+
+    <!-- Sidebar -->
     <div id="sidebar" class="sidebar">
-        <!-- Imagen del logotipo o cualquier otra imagen representativa -->
         <img src="logo.png" alt="Logo" class="sidebar-logo">
     
         <ul class="menu">
-            <li><a href="#">Reconstrucción del recorrido</a></li>
+            <li><a href="#" id="inicioBtn">Inicio</a></li>  
+            <li><a href="#" id="reconstruccionBtn">Reconstrucción del recorrido</a></li>
             <li><a href="#" onclick="logout()">Cerrar Sesión</a></li>
         </ul>
-        <div class="sidebar-footer">
-        </div>
-        <script src="/scripts/logout.js"></script> 
+        <div class="sidebar-footer"></div>
     </div>
-    
+
+    <!-- Cargar script de logout -->
+    <script src="/scripts/logout.js"></script>
+
+    <!-- Script para cargar el menú de reconstrucción -->
+    <script src="/scripts/reconstruccion.js"></script>
 </body>
 </html>
-
-
