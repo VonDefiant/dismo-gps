@@ -12,6 +12,9 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateMarkers() {
         // Limpiar todos los marcadores existentes antes de añadir nuevos
         clearMarkers();
+
+        console.log("Actualizando las últimas ubicaciones...");
+
         // Fetch de las últimas coordenadas
         fetch('/coordinates/latest-coordinates')
             .then(response => response.json())
@@ -29,7 +32,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         Latitude: ${coord.latitude}<br>
                         Longitud: ${coord.longitude}<br>
                         Fecha y hora: ${formattedDate}, ${formattedTime}<br>
+                        Batería: ${coord.battery}%<br>
                         VPN activo: ${coord.vpn_validation}
+
                     `);
                 });
             })
@@ -47,12 +52,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Función para iniciar el intervalo de actualización
     function startUpdating() {
+        console.log("Iniciando la actualización automática de las últimas ubicaciones.");
         updateMarkers(); // Llamar una vez para la primera actualización
         updateInterval = setInterval(updateMarkers, 30000);  // Actualizar los marcadores cada 30 segundos
     }
 
     // Función para detener el intervalo de actualización
     function stopUpdating() {
+        console.log("Deteniendo la actualización automática de las últimas ubicaciones.");
         clearInterval(updateInterval); // Detener la actualización periódica
     }
 
@@ -65,6 +72,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Manejar el clic en el botón "Inicio" para reanudar la actualización
     document.getElementById('inicioBtn').addEventListener('click', function() {
+        console.log("Reanudando la actualización de las últimas ubicaciones.");
         startUpdating(); // Reiniciar el intervalo de actualización
     });
 });

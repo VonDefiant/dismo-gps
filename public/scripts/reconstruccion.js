@@ -7,7 +7,9 @@ document.addEventListener('DOMContentLoaded', function() {
         // Detener la actualización automática de las últimas ubicaciones
         if (typeof stopUpdating === 'function') {
             stopUpdating(); // Detener el intervalo de actualización desde main.js
+            console.log("Actualización automática detenida para la reconstrucción.");
         } else {
+            console.error("La función stopUpdating no está definida.");
         }
 
         // Cargar el archivo HTML para el modal
@@ -40,7 +42,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Manejar la reconstrucción del recorrido
                 document.getElementById('reconstruirBtn').addEventListener('click', function() {
                     const idRuta = document.getElementById('rutaSelect').value;
-                    const fechaSeleccionada = document.getElementById('fechaSelect').value;
+                    let fechaSeleccionada = document.getElementById('fechaSelect').value;
+
+                    // Asegurarse de que la fecha esté en formato YYYY-MM-DD
+                    fechaSeleccionada = new Date(fechaSeleccionada).toISOString().split('T')[0];
+                    console.log(`Enviando consulta con id_ruta: ${idRuta} y fecha: ${fechaSeleccionada}`);
 
                     // Limpiar todos los marcadores actuales
                     clearMarkers();
@@ -54,6 +60,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 console.error('Datos incorrectos o vacíos para la reconstrucción del recorrido.');
                                 return;
                             }
+
                             // Ocultar el modal después de hacer clic en "Reconstruir"
                             document.getElementById('reconstruccionContainer').style.display = 'none';
 
@@ -67,6 +74,12 @@ document.addEventListener('DOMContentLoaded', function() {
                                     if (!isNaN(lat) && !isNaN(lng)) {
                                         console.log('Creando marcador con lat:', lat, 'lng:', lng);
 
+                                        // Formatear la fecha y la hora como en main.js
+                                        const datetime = new Date(coordinate.timestamp);
+                                        const formattedDate = `${datetime.getDate().toString().padStart(2, '0')}/${(datetime.getMonth() + 1).toString().padStart(2, '0')}/${datetime.getFullYear()}`;
+                                        const time = coordinate.timestamp.split('T')[1]; // Obtener la parte de la hora
+                                        const formattedTime = time.split('.')[0]; // Elimina los milisegundos y la zona horaria
+
                                         try {
                                             const marker = L.marker([lat, lng]).addTo(map); // Crear el marcador utilizando la instancia global de map
 
@@ -75,7 +88,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                                 <strong>Ruta: ${coordinate.id_ruta}</strong><br>
                                                 Latitude: ${coordinate.latitude}<br>
                                                 Longitud: ${coordinate.longitude}<br>
-                                                Fecha y hora: ${new Date(coordinate.timestamp).toLocaleString()}<br>
+                                                Fecha y hora: ${formattedDate}, ${formattedTime}<br>
                                                 VPN activo: ${coordinate.vpn_validation === 'true' ? 'Sí' : 'No'}
                                             `);
 
@@ -100,10 +113,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Función para limpiar todos los marcadores del mapa
     function clearMarkers() {
-        map.eachLayer(function(layer) {
-            if (layer instanceof L.Marker) {
-                map.removeLayer(layer); // Eliminar todas las capas de tipo L.Marker
-            }
+        markers.forEach(marker => {
+            map.removeLayer(marker); // Eliminar cada marcador del mapa
         });
+        markers = []; // Vaciar el array de marcadores
     }
 });
