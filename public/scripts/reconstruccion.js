@@ -8,8 +8,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (typeof stopUpdating === 'function') {
             stopUpdating(); // Detener el intervalo de actualización desde main.js
             console.log("Actualización automática detenida para la reconstrucción.");
-        } else {
-            console.error("La función stopUpdating no está definida.");
         }
 
         // Cargar el archivo HTML para el modal
@@ -42,10 +40,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Manejar la reconstrucción del recorrido
                 document.getElementById('reconstruirBtn').addEventListener('click', function() {
                     const idRuta = document.getElementById('rutaSelect').value;
-                    let fechaSeleccionada = document.getElementById('fechaSelect').value;
+                    const fechaSeleccionada = document.getElementById('fechaSelect').value;
 
-                    // Asegurarse de que la fecha esté en formato YYYY-MM-DD
-                    fechaSeleccionada = new Date(fechaSeleccionada).toISOString().split('T')[0];
                     console.log(`Enviando consulta con id_ruta: ${idRuta} y fecha: ${fechaSeleccionada}`);
 
                     // Limpiar todos los marcadores actuales
@@ -60,6 +56,8 @@ document.addEventListener('DOMContentLoaded', function() {
                                 console.error('Datos incorrectos o vacíos para la reconstrucción del recorrido.');
                                 return;
                             }
+
+                            console.log('Coordenadas recibidas:', coordenadas); // Verificar las coordenadas recibidas
 
                             // Ocultar el modal después de hacer clic en "Reconstruir"
                             document.getElementById('reconstruccionContainer').style.display = 'none';
@@ -83,12 +81,13 @@ document.addEventListener('DOMContentLoaded', function() {
                                         try {
                                             const marker = L.marker([lat, lng]).addTo(map); // Crear el marcador utilizando la instancia global de map
 
-                                            // Añadir el popup con la información del marcador
+                                            // Añadir el popup con la información del marcador, incluyendo la batería
                                             marker.bindPopup(`
                                                 <strong>Ruta: ${coordinate.id_ruta}</strong><br>
                                                 Latitude: ${coordinate.latitude}<br>
                                                 Longitud: ${coordinate.longitude}<br>
                                                 Fecha y hora: ${formattedDate}, ${formattedTime}<br>
+                                                Batería: ${coordinate.battery}%<br>
                                                 VPN activo: ${coordinate.vpn_validation === 'true' ? 'Sí' : 'No'}
                                             `);
 
@@ -113,9 +112,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Función para limpiar todos los marcadores del mapa
     function clearMarkers() {
-        markers.forEach(marker => {
-            map.removeLayer(marker); // Eliminar cada marcador del mapa
+        map.eachLayer(function(layer) {
+            if (layer instanceof L.Marker) {
+                map.removeLayer(layer); // Eliminar todas las capas de tipo L.Marker
+            }
         });
-        markers = []; // Vaciar el array de marcadores
     }
 });
