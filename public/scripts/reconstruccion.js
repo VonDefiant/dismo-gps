@@ -70,13 +70,14 @@ document.addEventListener('DOMContentLoaded', function() {
                                     const lng = parseFloat(coordinate.longitude);
 
                                     if (!isNaN(lat) && !isNaN(lng)) {
-                                        console.log('Creando marcador con lat:', lat, 'lng:', lng);
 
-                                        // Formatear la fecha y la hora como en main.js
-                                        const datetime = new Date(coordinate.timestamp);
-                                        const formattedDate = `${datetime.getDate().toString().padStart(2, '0')}/${(datetime.getMonth() + 1).toString().padStart(2, '0')}/${datetime.getFullYear()}`;
-                                        const time = coordinate.timestamp.split('T')[1]; // Obtener la parte de la hora
-                                        const formattedTime = time.split('.')[0]; // Elimina los milisegundos y la zona horaria
+                                        // Extraer la fecha y hora en UTC sin convertir a la zona local
+                                        // Separar la fecha y hora en componentes
+                                        const [datePart, timePart] = coordinate.timestamp.split('T');
+                                        const [year, month, day] = datePart.split('-'); // Extraer el año, mes y día
+                                        const formattedDate = `${day}/${month}/${year}`; // Formato DD/MM/YYYY
+                                        const formattedTime = timePart.split('.')[0]; // HH:MM:SS sin milisegundos ni zona horaria
+
 
                                         try {
                                             const marker = L.marker([lat, lng]).addTo(map); // Crear el marcador utilizando la instancia global de map

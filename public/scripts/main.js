@@ -20,10 +20,11 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(response => response.json())
             .then(data => {
                 data.forEach(coord => {
-                    const datetime = new Date(coord.timestamp);
-                    const formattedDate = `${datetime.getDate().toString().padStart(2, '0')}/${(datetime.getMonth() + 1).toString().padStart(2, '0')}/${datetime.getFullYear()}`;
-                    const time = coord.timestamp.split('T')[1]; // Obtener la parte de la hora
-                    const formattedTime = time.split('.')[0]; // Elimina los milisegundos y la zona horaria
+                    // Dividir el timestamp en fecha y hora
+                    const [datePart, timePart] = coord.timestamp.split('T');
+                    const [year, month, day] = datePart.split('-'); // Extraer año, mes y día
+                    const formattedDate = `${day}/${month}/${year}`; // Formato DD/MM/YYYY
+                    const formattedTime = timePart.split('.')[0]; // Elimina los milisegundos y la zona horaria
 
                     // Crear el marcador y añadirlo al mapa
                     const marker = L.marker([coord.latitude, coord.longitude]).addTo(map);
