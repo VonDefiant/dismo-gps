@@ -1,6 +1,16 @@
 document.addEventListener('DOMContentLoaded', function() {
     let markers = []; // Almacenar los marcadores de la reconstrucción
 
+    const customIcon = L.icon({
+        iconUrl: '/icons/marker-icon-2x.png',
+        shadowUrl: '/icons/marker-shadow.png',
+        iconSize: [30, 45], // Tamaño del ícono
+        shadowSize: [50, 64], // Tamaño de la sombra
+        iconAnchor: [15, 45], // Ancla el icono en la parte inferior centro
+        shadowAnchor: [15, 64], // Ancla la sombra en la parte inferior centro
+        popupAnchor: [0, -45] // Ajusta el popup para abrirse justo encima del ícono
+    });
+
     document.getElementById('reconstruccionBtn').addEventListener('click', function(event) {
         event.preventDefault(); // Prevenir el comportamiento predeterminado del enlace
 
@@ -57,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 return;
                             }
 
-                            console.log('Coordenadas recibidas:', coordenadas); // Verificar las coordenadas recibidas
+                            console.log('Coordenadas recibidas:', coordenadas); 
 
                             // Ocultar el modal después de hacer clic en "Reconstruir"
                             document.getElementById('reconstruccionContainer').style.display = 'none';
@@ -80,7 +90,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
                                         try {
-                                            const marker = L.marker([lat, lng]).addTo(map); // Crear el marcador utilizando la instancia global de map
+                                            const marker = L.marker([lat, lng], { icon: customIcon }).addTo(map);
 
                                             // Añadir el popup con la información del marcador, incluyendo la batería
                                             marker.bindPopup(`
