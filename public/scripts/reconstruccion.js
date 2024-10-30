@@ -1,16 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     let markers = []; // Almacenar los marcadores de la reconstrucción
 
-    const customIcon = L.icon({
-        iconUrl: '/icons/marker-icon-2x.png',
-        shadowUrl: '/icons/marker-shadow.png',
-        iconSize: [30, 45], // Tamaño del ícono
-        shadowSize: [50, 64], // Tamaño de la sombra
-        iconAnchor: [15, 45], // Ancla el icono en la parte inferior centro
-        shadowAnchor: [15, 64], // Ancla la sombra en la parte inferior centro
-        popupAnchor: [0, -45] // Ajusta el popup para abrirse justo encima del ícono
-    });
-
     document.getElementById('reconstruccionBtn').addEventListener('click', function(event) {
         event.preventDefault(); // Prevenir el comportamiento predeterminado del enlace
 
@@ -80,17 +70,17 @@ document.addEventListener('DOMContentLoaded', function() {
                                     const lng = parseFloat(coordinate.longitude);
 
                                     if (!isNaN(lat) && !isNaN(lng)) {
-                                        console.log('Creando marcador con lat:', lat, 'lng:', lng);
 
                                         // Extraer la fecha y hora en UTC sin convertir a la zona local
+                                        // Separar la fecha y hora en componentes
                                         const [datePart, timePart] = coordinate.timestamp.split('T');
-                                        const [year, month, day] = datePart.split('-');
-                                        const formattedDate = `${day}/${month}/${year}`;
+                                        const [year, month, day] = datePart.split('-'); // Extraer el año, mes y día
+                                        const formattedDate = `${day}/${month}/${year}`; // Formato DD/MM/YYYY
                                         const formattedTime = timePart.split('.')[0]; // HH:MM:SS sin milisegundos ni zona horaria
 
+
                                         try {
-                                            // Usar el icono personalizado en el marcador
-                                            const marker = L.marker([lat, lng], { icon: customIcon }).addTo(map);
+                                            const marker = L.marker([lat, lng]).addTo(map); // Crear el marcador utilizando la instancia global de map
 
                                             // Añadir el popup con la información del marcador, incluyendo la batería
                                             marker.bindPopup(`
@@ -123,9 +113,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Función para limpiar todos los marcadores del mapa
     function clearMarkers() {
-        markers.forEach(marker => {
-            map.removeLayer(marker); // Eliminar cada marcador del mapa
+        map.eachLayer(function(layer) {
+            if (layer instanceof L.Marker) {
+                map.removeLayer(layer); // Eliminar todas las capas de tipo L.Marker
+            }
         });
-        markers = []; // Vaciar el array de marcadores
     }
 });
