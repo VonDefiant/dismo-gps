@@ -11,8 +11,8 @@ const coordinatesRoutes = require('./routes/coordinatesRoutes');
 
 // Middleware para sesiones
 app.use(session({
-    secret: 'f3b8b1a8b0315bc094341302b7e3d761c8ee78944557f8a36283c9efb82694505718bfebdd8b073558b9c8af4ede0c22342934d95a620bc7',
-    resave: false,
+    secret: process.env.SESSION_SECRET,
+    resave: false,  
     saveUninitialized: true,
 }));
 
