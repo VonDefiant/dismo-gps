@@ -8,6 +8,17 @@ document.addEventListener('DOMContentLoaded', function() {
         maxZoom: 19,
     }).addTo(map);
 
+    // Definir el ícono personalizado con sombra
+    const customIcon = L.icon({
+        iconUrl: '/icons/marker-icon-2x.png',
+        shadowUrl: '/icons/marker-shadow.png',
+        iconSize: [30, 45], // Tamaño del ícono
+        shadowSize: [50, 64], // Tamaño de la sombra
+        iconAnchor: [15, 45], // Ancla el icono en la parte inferior centro
+        shadowAnchor: [15, 64], // Ancla la sombra en la parte inferior centro
+        popupAnchor: [0, -45] // Ajusta el popup para abrirse justo encima del ícono
+    });
+    
     // Función para actualizar las últimas ubicaciones
     function updateMarkers() {
         // Limpiar todos los marcadores existentes antes de añadir nuevos
@@ -26,16 +37,15 @@ document.addEventListener('DOMContentLoaded', function() {
                     const formattedDate = `${day}/${month}/${year}`; // Formato DD/MM/YYYY
                     const formattedTime = timePart.split('.')[0]; // Elimina los milisegundos y la zona horaria
 
-                    // Crear el marcador y añadirlo al mapa
-                    const marker = L.marker([coord.latitude, coord.longitude]).addTo(map);
+                    // Crear el marcador con el ícono personalizado y añadirlo al mapa
+                    const marker = L.marker([coord.latitude, coord.longitude], { icon: customIcon }).addTo(map);
                     marker.bindPopup(`
                         <strong>Ruta: ${coord.id_ruta}</strong><br>
                         Latitude: ${coord.latitude}<br>
                         Longitud: ${coord.longitude}<br>
                         Fecha y hora: ${formattedDate}, ${formattedTime}<br>
                         Batería: ${coord.battery}%<br>
-                        VPN activo: ${coord.vpn_validation}
-
+                        VPN activo: ${coord.vpn_validation ? 'No' : 'No'}
                     `);
                 });
             })
