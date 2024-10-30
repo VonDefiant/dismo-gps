@@ -88,7 +88,8 @@ document.addEventListener('DOMContentLoaded', function() {
                                         const formattedDate = `${day}/${month}/${year}`; // Formato DD/MM/YYYY
                                         const formattedTime = timePart.split('.')[0]; // HH:MM:SS sin milisegundos ni zona horaria
 
-
+                                        // Redondear el valor de la batería a un número entero
+                                        const batteryLevel = Math.round(coordinate.battery);
                                         try {
                                             const marker = L.marker([lat, lng], { icon: customIcon }).addTo(map);
 
@@ -98,7 +99,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                                 Latitude: ${coordinate.latitude}<br>
                                                 Longitud: ${coordinate.longitude}<br>
                                                 Fecha y hora: ${formattedDate}, ${formattedTime}<br>
-                                                Batería: ${coordinate.battery}%<br>
+                                                Batería: ${batteryLevel}%<br>
                                                 VPN activo: ${coordinate.vpn_validation === 'true' ? 'Sí' : 'No'}
                                             `);
 
