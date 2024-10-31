@@ -32,12 +32,16 @@ document.addEventListener('DOMContentLoaded', function() {
                     document.getElementById('reconstruccionContainer').style.display = 'none'; // Ocultar el modal
                 });
 
-                // Cargar los id_ruta en el selector
+                // Cargar los id_ruta en el selector y ordenarlos
                 fetch('/coordinates/getUniqueRutas')
                     .then(response => response.json())
                     .then(rutas => {
                         const select = document.getElementById('rutaSelect');
                         select.innerHTML = ''; // Limpiar opciones previas
+                        
+                        // Ordenar rutas en orden ascendente
+                        rutas.sort((a, b) => a.localeCompare(b));
+                        
                         rutas.forEach(ruta => {
                             const option = document.createElement('option');
                             option.value = ruta;
@@ -61,39 +65,31 @@ document.addEventListener('DOMContentLoaded', function() {
                     fetch(`/coordinates/reconstruirRecorrido?id_ruta=${idRuta}&fecha=${fechaSeleccionada}`)
                         .then(response => response.json())
                         .then(coordenadas => {
-                            // Verificar si los datos están correctos
                             if (!Array.isArray(coordenadas) || coordenadas.length === 0) {
                                 console.error('Datos incorrectos o vacíos para la reconstrucción del recorrido.');
                                 return;
                             }
 
-                            console.log('Coordenadas recibidas:', coordenadas); 
+                            console.log('Coordenadas recibidas:', coordenadas);
 
-                            // Ocultar el modal después de hacer clic en "Reconstruir"
                             document.getElementById('reconstruccionContainer').style.display = 'none';
 
                             // Mostrar los nuevos marcadores basados en la consulta
                             coordenadas.forEach((coordinate) => {
-                                // Validar que las coordenadas sean correctas antes de crear el marcador
                                 if (coordinate.latitude && coordinate.longitude) {
                                     const lat = parseFloat(coordinate.latitude);
                                     const lng = parseFloat(coordinate.longitude);
 
                                     if (!isNaN(lat) && !isNaN(lng)) {
-
-                                        // Extraer la fecha y hora en UTC sin convertir a la zona local
-                                        // Separar la fecha y hora en componentes
                                         const [datePart, timePart] = coordinate.timestamp.split('T');
-                                        const [year, month, day] = datePart.split('-'); // Extraer el año, mes y día
-                                        const formattedDate = `${day}/${month}/${year}`; // Formato DD/MM/YYYY
-                                        const formattedTime = timePart.split('.')[0]; // HH:MM:SS sin milisegundos ni zona horaria
-
-                                        // Redondear el valor de la batería a un número entero
+                                        const [year, month, day] = datePart.split('-');
+                                        const formattedDate = `${day}/${month}/${year}`;
+                                        const formattedTime = timePart.split('.')[0];
                                         const batteryLevel = Math.round(coordinate.battery);
+
                                         try {
                                             const marker = L.marker([lat, lng], { icon: customIcon }).addTo(map);
 
-                                            // Añadir el popup con la información del marcador, incluyendo la batería
                                             marker.bindPopup(`
                                                 <strong>Ruta: ${coordinate.id_ruta}</strong><br>
                                                 Latitude: ${coordinate.latitude}<br>
@@ -103,7 +99,6 @@ document.addEventListener('DOMContentLoaded', function() {
                                                 VPN activo: ${coordinate.vpn_validation === 'true' ? 'Sí' : 'No'}
                                             `);
 
-                                            // Almacenar el marcador en el array
                                             markers.push(marker);
                                         } catch (error) {
                                             console.error('Error al crear el marcador:', error);
@@ -126,7 +121,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function clearMarkers() {
         map.eachLayer(function(layer) {
             if (layer instanceof L.Marker) {
-                map.removeLayer(layer); // Eliminar todas las capas de tipo L.Marker
+                map.removeLayer(layer);
             }
         });
     }
