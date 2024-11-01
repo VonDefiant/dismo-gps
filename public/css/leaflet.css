@@ -137,31 +137,36 @@ h2 {
     width: 100%;
     max-height: 300px; /* Limita la altura para que aparezca el scroll */
     overflow-y: auto; /* Scroll solo vertical */
-    border-top: 1px solid #fab925; /* Línea amarilla */
+    border-top: 1px solid #fab925; /* Línea amarilla en la parte superior */
     margin-top: 10px;
+    position: relative;
 }
 
-/* Encabezado y filas del modal de vendedores */
-#vendedoresData .header-row,
-#vendedoresData .vendedor-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr; /* Cuatro columnas */
-    gap: 10px;
-    padding: 10px 0;
-    text-align: center; /* Centrar los textos */
-    border-bottom: 1px solid #fab925; /* Líneas de separación amarillas */
-}
-
-/* Encabezado */
+/* Encabezado fijo */
 #vendedoresData .header-row {
     font-weight: bold;
     color: white;
     background-color: #1d3f7d;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 10px;
+    padding: 10px 0;
+    text-align: center;
+    position: sticky;
+    top: 0; /* Mantener fijo en la parte superior del contenedor */
+    z-index: 1; /* Asegura que se mantenga encima de las filas de datos */
+    border-bottom: 1px solid #fab925; /* Línea amarilla debajo del encabezado */
 }
 
 /* Fila de datos de cada vendedor */
 #vendedoresData .vendedor-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 10px;
+    padding: 10px 0;
+    text-align: center;
     background-color: #1d3f7d;
+    border-bottom: 1px solid #fab925; /* Línea amarilla separando cada fila */
 }
 
 /* Botón de lupa alineado */
