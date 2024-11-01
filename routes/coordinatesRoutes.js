@@ -69,6 +69,26 @@ router.get('/reconstruirRecorrido', async (req, res) => {
     }
 });
 
+
+// Ruta para obtener todas las últimas coordenadas para cada id_ruta
+router.get('/all-latest', async (req, res) => {
+    try {
+        const result = await pool.query(`
+            SELECT id, latitude, longitude, id_ruta, timestamp, vpn_validation, battery FROM coordinates
+            WHERE (id_ruta, timestamp) IN (
+                SELECT id_ruta, MAX(timestamp)
+                FROM coordinates
+                GROUP BY id_ruta
+            );
+        `);
+        res.json(result.rows);
+    } catch (err) {
+        console.error('Error al obtener las coordenadas:', err);
+        res.status(500).send('Error al obtener las coordenadas');
+    }
+});
+
+
 // Ruta GET para pruebas
 router.get('/', (req, res) => {
     res.status(200).send('Atlas sabe donde estas!');
