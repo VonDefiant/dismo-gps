@@ -4,10 +4,11 @@ const session = require('express-session');
 const path = require('path');
 const app = express();
 
-// Importa las rutas
+// Importar rutas
 const authRoutes = require('./routes/authRoutes');
 const mainRoutes = require('./routes/mainRoutes');
 const coordinatesRoutes = require('./routes/coordinatesRoutes');
+const coordinatesRoutes2 = require('./routes/coordinatesRoutes2'); // Segundo GPS
 
 // Middleware para sesiones
 app.use(session({
@@ -19,13 +20,16 @@ app.use(session({
 // Middleware para servir archivos estáticos
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Middleware para servir archivos del segundo GPS
+app.use('/gps2', express.static(path.join(__dirname, 'public', 'gps2')));
+
 // Middleware para parsear cuerpos de solicitud JSON y URL-encoded
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// Ruta por defecto para redirigir al login
+// Ruta por defecto para redirigir al login o a la vista correspondiente
 app.get('/', (req, res) => {
-    res.redirect('/login');
+    res.redirect('/login'); // Por defecto, redirige al login
 });
 
 // Rutas de autenticación
@@ -39,12 +43,9 @@ app.get('/login', (req, res) => {
 
 // Middleware para verificar autenticación
 function isAuthenticated(req, res, next) {
-    // Permitir POST a /coordinates sin autenticación
-    if (req.path === '/coordinates' && req.method === 'POST') {
+    if ((req.path.startsWith('/coordinates') || req.path.startsWith('/coordinates2')) && req.method === 'POST') {
         return next();
     }
-
-    // Verificar la sesión para las demás rutas
     if (req.session.userId) {
         return next();
     } else {
@@ -55,8 +56,16 @@ function isAuthenticated(req, res, next) {
 // Rutas principales protegidas por autenticación
 app.use('/main', isAuthenticated, mainRoutes);
 
-// Rutas de coordenadas (no requieren autenticación)
+// Rutas de coordenadas del GPS principal (requiere autenticación)
 app.use('/coordinates', coordinatesRoutes);
+
+// Rutas de coordenadas del GPS 2 (sin autenticación)
+app.use('/coordinates2', coordinatesRoutes2);
+
+// Ruta para mostrar la interfaz de GPS 2 sin autenticación
+app.get('/gps2', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'gps2', 'main2.html'));
+});
 
 // Ruta para cerrar sesión
 app.post('/logout', (req, res) => {
