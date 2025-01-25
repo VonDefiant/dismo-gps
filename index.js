@@ -8,7 +8,6 @@ const app = express();
 const authRoutes = require('./routes/authRoutes');
 const mainRoutes = require('./routes/mainRoutes');
 const coordinatesRoutes = require('./routes/coordinatesRoutes');
-const salesRoutes = require('./routes/salesRoutes');
 
 // Middleware para sesiones
 app.use(session({
@@ -55,7 +54,7 @@ app.use('/main', isAuthenticated, mainRoutes);
 
 // Rutas de coordenadas del GPS principal (requiere autenticación)
 app.use('/coordinates', coordinatesRoutes);
-app.use('/sales', salesRoutes);
+
 // Ruta para cerrar sesión
 app.post('/logout', (req, res) => {
     req.session.destroy(err => {

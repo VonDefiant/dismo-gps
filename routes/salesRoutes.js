@@ -3,7 +3,7 @@ const router = express.Router();
 const pool = require('../db');
 
 // Ruta para insertar múltiples registros en ventaxfamilia
-router.post('/bulk', async (req, res) => {
+router.post('/', async (req, res) => {
     const sales = req.body; // Recibimos un arreglo de registros
 
     // Validación básica
