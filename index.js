@@ -10,60 +10,64 @@ const mainRoutes = require('./routes/mainRoutes');
 const coordinatesRoutes = require('./routes/coordinatesRoutes');
 const salesRoutes = require('./routes/salesRoutes');
 
-// Configuración de sesiones
+// Middleware para sesiones
 app.use(session({
-    secret: process.env.SESSION_SECRET || 'default_secret',
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-        secure: process.env.NODE_ENV === 'production',
-        httpOnly: true,
-        maxAge: 24 * 60 * 60 * 1000, // 1 día
-    },
+    secret: process.env.SESSION_SECRET,
+    resave: false,  
+    saveUninitialized: true,
 }));
-
-// Middleware para parsear solicitudes
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
 
 // Middleware para servir archivos estáticos
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Middleware de autenticación
+// Middleware para parsear cuerpos de solicitud JSON y URL-encoded
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
+// Ruta por defecto para redirigir al login o a la vista correspondiente
+app.get('/', (req, res) => {
+    res.redirect('/login'); // Por defecto, redirige al login
+});
+
+// Rutas de autenticación
+app.set('trust proxy', 1);
+app.use('/auth', authRoutes);
+
+// Ruta para mostrar el formulario de login
+app.get('/login', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'login.html'));
+});
+
+// Middleware para verificar autenticación
 function isAuthenticated(req, res, next) {
-    if (req.session && req.session.userId) {
+    if (req.path.startsWith('/coordinates') && req.method === 'POST') {
         return next();
     }
-    res.redirect('/login');
+    if (req.session.userId) {
+        return next();
+    } else {
+        res.redirect('/login');
+    }
 }
 
-// Rutas principales
-app.use('/auth', authRoutes);
+// Rutas principales protegidas por autenticación
 app.use('/main', isAuthenticated, mainRoutes);
-app.use('/coordinates', isAuthenticated, coordinatesRoutes);
-app.use('/sales', isAuthenticated, salesRoutes);
 
-// Ruta por defecto
-app.get('/', (req, res) => res.redirect('/login'));
-
+// Rutas de coordenadas del GPS principal (requiere autenticación)
+app.use('/coordinates', coordinatesRoutes);
+app.use('/sales', salesRoutes);
 // Ruta para cerrar sesión
 app.post('/logout', (req, res) => {
     req.session.destroy(err => {
         if (err) {
-            console.error('Error al cerrar sesión:', err.message);
+            console.error('Error al cerrar sesión:', err);
             return res.status(500).send('No se pudo cerrar la sesión');
         }
         res.redirect('/login');
     });
 });
 
-// Middleware de manejo de errores
-app.use((err, req, res, next) => {
-    console.error('Error:', err.message);
-    res.status(500).json({ error: 'Error interno del servidor' });
-});
-
-// Servidor escucha en el puerto especificado
+// Servidor escucha en el puerto 5006 o en el puerto de Heroku
 const PORT = process.env.PORT || 5006;
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en el puerto ${PORT}`);
