@@ -8,7 +8,6 @@ const app = express();
 const authRoutes = require('./routes/authRoutes');
 const mainRoutes = require('./routes/mainRoutes');
 const coordinatesRoutes = require('./routes/coordinatesRoutes');
-const coordinatesRoutes2 = require('./routes/coordinatesRoutes2'); // Segundo GPS
 
 // Middleware para sesiones
 app.use(session({
@@ -19,9 +18,6 @@ app.use(session({
 
 // Middleware para servir archivos estáticos
 app.use(express.static(path.join(__dirname, 'public')));
-
-// Middleware para servir archivos del segundo GPS
-app.use('/gps2', express.static(path.join(__dirname, 'public', 'gps2')));
 
 // Middleware para parsear cuerpos de solicitud JSON y URL-encoded
 app.use(express.urlencoded({ extended: true }));
@@ -43,7 +39,7 @@ app.get('/login', (req, res) => {
 
 // Middleware para verificar autenticación
 function isAuthenticated(req, res, next) {
-    if ((req.path.startsWith('/coordinates') || req.path.startsWith('/coordinates2')) && req.method === 'POST') {
+    if (req.path.startsWith('/coordinates') && req.method === 'POST') {
         return next();
     }
     if (req.session.userId) {
@@ -58,14 +54,6 @@ app.use('/main', isAuthenticated, mainRoutes);
 
 // Rutas de coordenadas del GPS principal (requiere autenticación)
 app.use('/coordinates', coordinatesRoutes);
-
-// Rutas de coordenadas del GPS 2 (sin autenticación)
-app.use('/coordinates2', coordinatesRoutes2);
-
-// Ruta para mostrar la interfaz de GPS 2 sin autenticación
-app.get('/gps2', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'gps2', 'main2.html'));
-});
 
 // Ruta para cerrar sesión
 app.post('/logout', (req, res) => {
