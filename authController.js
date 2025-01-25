@@ -1,29 +1,42 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const pool = require('./db');
+const { validationResult } = require('express-validator');
 
 exports.login = async (req, res) => {
     const { username, password } = req.body;
-    console.log("Intentando iniciar sesión para:", username);
+
+    // Validación de entradas
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
     try {
         const result = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
-        console.log("Usuario encontrado:", result.rows.length > 0);
-        if (result.rows.length > 0) {
-            const user = result.rows[0];
-            const isValid = await bcrypt.compare(password, user.password);
-            console.log("Contraseña válida:", isValid);
-            if (isValid) {
-                req.session.userId = user.id;  // Establecer el ID del usuario en la sesión
-                console.log("Sesión establecida para usuario ID:", user.id);
-                res.redirect('/main');  // Redirigir al usuario a la página principal
-            } else {
-                res.status(401).send('Contraseña incorrecta');
-            }
-        } else {
-            res.status(404).send('Usuario no encontrado');
+        if (result.rows.length === 0) {
+            // No revelar si el usuario existe o no
+            return res.status(401).send('Credenciales inválidas');
         }
+
+        const user = result.rows[0];
+        const isValid = await bcrypt.compare(password, user.password);
+
+        if (!isValid) {
+            // No revelar si el problema es con el usuario o la contraseña
+            return res.status(401).send('Credenciales inválidas');
+        }
+
+        // Establecer sesión
+        req.session.userId = user.id;
+
+        res.status(200).json({
+            success: true,
+            message: 'Inicio de sesión exitoso',
+            user: { id: user.id, username: user.username },
+        });
     } catch (err) {
-        console.error(err);
-        res.status(500).send('Error al iniciar sesión');
+        console.error('Error al iniciar sesión:', err.message);
+        res.status(500).json({ error: 'Error interno del servidor' });
     }
 };
