@@ -46,3 +46,34 @@ router.get('/', (req, res) => {
     res.status(200).send('Atlas sabe donde estas!');
 });
 module.exports = router;
+
+// Ruta para consultar registros filtrados por ruta y fecha
+router.get('/query', async (req, res) => {
+    const { ruta, fecha } = req.query;
+
+    if (!ruta || !fecha) {
+        return res.status(400).json({ error: 'Faltan parámetros: ruta o fecha.' });
+    }
+
+    try {
+        const query = `
+            SELECT DISTINCT ON (cod_fam)
+                cod_fam,
+                descripcion,
+                venta,
+                coberturas,
+                fecha
+            FROM ventaxfamilia
+            WHERE ruta = $1 AND DATE(fecha) = $2
+            ORDER BY cod_fam, fecha DESC;
+        `;
+
+        const values = [ruta, fecha];
+        const result = await pool.query(query, values);
+
+        res.status(200).json(result.rows);
+    } catch (err) {
+        console.error('Error al consultar registros:', err.message);
+        res.status(500).json({ error: 'Error al consultar registros en la base de datos.' });
+    }
+});
