@@ -1,29 +1,38 @@
-const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const pool = require('./db');
+const logger = require('./logger'); // Configura winston en un archivo aparte
+const { body, validationResult } = require('express-validator');
 
-exports.login = async (req, res) => {
-    const { username, password } = req.body;
-    console.log("Intentando iniciar sesión para:", username);
-    try {
-        const result = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
-        console.log("Usuario encontrado:", result.rows.length > 0);
-        if (result.rows.length > 0) {
-            const user = result.rows[0];
-            const isValid = await bcrypt.compare(password, user.password);
-            console.log("Contraseña válida:", isValid);
-            if (isValid) {
-                req.session.userId = user.id;  // Establecer el ID del usuario en la sesión
-                console.log("Sesión establecida para usuario ID:", user.id);
-                res.redirect('/main');  // Redirigir al usuario a la página principal
-            } else {
-                res.status(401).send('Contraseña incorrecta');
-            }
-        } else {
-            res.status(404).send('Usuario no encontrado');
-        }
-    } catch (err) {
-        console.error(err);
-        res.status(500).send('Error al iniciar sesión');
+exports.login = [
+  body('username').trim().notEmpty().withMessage('El nombre de usuario es requerido'),
+  body('password').notEmpty().withMessage('La contraseña es requerida'),
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
     }
-};
+
+    const { username, password } = req.body;
+    logger.info(`Intentando iniciar sesión para: ${username}`);
+
+    try {
+      const result = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
+      if (result.rows.length > 0) {
+        const user = result.rows[0];
+        const isValid = await bcrypt.compare(password, user.password);
+        if (isValid) {
+          req.session.userId = user.id;
+          logger.info(`Sesión establecida para usuario ID: ${user.id}`);
+          res.redirect('/main');
+        } else {
+          res.status(401).send('Credenciales incorrectas');
+        }
+      } else {
+        res.status(401).send('Credenciales incorrectas');
+      }
+    } catch (err) {
+      logger.error(`Error al iniciar sesión: ${err.message}`);
+      res.status(500).send('Error al iniciar sesión');
+    }
+  }
+];
