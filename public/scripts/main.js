@@ -19,6 +19,23 @@ document.addEventListener('DOMContentLoaded', function() {
         popupAnchor: [0, -45] // Ajusta el popup para abrirse justo encima del ícono
     });
     
+    // Crear el indicador de última actualización solo una vez
+    const lastUpdateDiv = document.createElement('div');
+    lastUpdateDiv.id = 'lastUpdate';
+    lastUpdateDiv.style.position = 'fixed';
+    lastUpdateDiv.style.bottom = '10px';
+    lastUpdateDiv.style.right = '10px';
+    lastUpdateDiv.style.background = 'white';
+    lastUpdateDiv.style.padding = '5px';
+    lastUpdateDiv.style.borderRadius = '5px';
+    lastUpdateDiv.style.boxShadow = '0 2px 5px rgba(0, 0, 0, 0.3)';
+    lastUpdateDiv.style.fontSize = '0.9em';
+    lastUpdateDiv.style.color = '#333';
+    lastUpdateDiv.style.zIndex = '1000'; // Asegúrate de que esté encima del mapa
+    lastUpdateDiv.textContent = 'Última actualización: Nunca';
+    document.body.appendChild(lastUpdateDiv);
+
+
     // Función para actualizar las últimas ubicaciones
     function updateMarkers() {
         // Limpiar todos los marcadores existentes antes de añadir nuevos
@@ -30,6 +47,8 @@ document.addEventListener('DOMContentLoaded', function() {
         fetch('/coordinates/latest-coordinates')
             .then(response => response.json())
             .then(data => {
+                const now = new Date();
+                lastUpdateDiv.textContent = `Última actualización: ${now.toLocaleString()}`;
                 data.forEach(coord => {
                     // Dividir el timestamp en fecha y hora
                     const [datePart, timePart] = coord.timestamp.split('T');
