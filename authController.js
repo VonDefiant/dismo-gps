@@ -22,16 +22,18 @@ exports.login = [
         const isValid = await bcrypt.compare(password, user.password);
         if (isValid) {
           req.session.userId = user.id;
-          logger.info(`Sesión establecida para usuario ID: ${user.id}`);
+          logger.info(`Sesión establecida`, { username }); // Incluye el username
           res.redirect('/main');
         } else {
+          logger.warn('Contraseña incorrecta', { username }); // Incluye el username
           res.status(401).send('Credenciales incorrectas');
         }
       } else {
-        res.status(401).send('Credenciales incorrectas');
+        logger.warn('Usuario no encontrado', { username }); // Incluye el username
+        res.status(404).send('Credenciales incorrectas');
       }
     } catch (err) {
-      logger.error(`Error al iniciar sesión: ${err.message}`);
+      logger.error(`Error al iniciar sesión: ${err.message}`, { username }); // Incluye el username
       res.status(500).send('Error al iniciar sesión');
     }
   }

@@ -1,13 +1,29 @@
 const express = require('express');
-const { login } = require('../authController');
-const path = require('path');
 const router = express.Router();
+const path = require('path');
+const { login } = require('../authController');
 
-// Ruta para servir la página de login
+// Ruta GET para login
 router.get('/login', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'public', 'login.html'));
+    try {
+        if (req.session.userId) {
+            return res.redirect('/main');
+        }
+        res.sendFile(path.join(__dirname, '..', 'public', 'login.html'));
+    } catch (error) {
+        console.error('Error serving login page:', error);
+        res.status(500).send('Error loading login page');
+    }
 });
 
+// Ruta POST para login
 router.post('/login', login);
+
+// Ruta para logout
+router.post('/logout', (req, res) => {
+    req.session.destroy(err => {
+        res.redirect('/login');
+    });
+});
 
 module.exports = router;
