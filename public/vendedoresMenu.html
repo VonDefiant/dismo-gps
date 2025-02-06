@@ -1,12 +1,23 @@
-<div id="vendedoresContainer" style="display: none;">
+<div id="vendedoresContainer" class="modal-container" role="dialog" aria-labelledby="vendedoresTitle" aria-modal="true" hidden>
     <div class="modal-content">
-        <h2>Vendedores</h2>
-        <div class="table-header">
-            <span>Ruta</span>
-            <span>Fecha y Hora</span>
-            <span>Acción</span>
+        <!-- Título del modal -->
+        <h2 id="vendedoresTitle" class="modal-title">Vendedores Activos</h2>
+
+        <!-- Encabezado de la tabla -->
+        <div class="table-header" role="rowgroup">
+            <span role="columnheader">Ruta</span>
+            <span role="columnheader">Fecha y Hora</span>
+            <span role="columnheader">Acción</span>
         </div>
-        <div id="vendedoresList" class="vendedores-list" style="max-height: 300px; overflow-y: auto;">
-  hh        </div>
+
+        <!-- Lista de vendedores -->
+        <div id="vendedoresList" class="vendedores-list" role="table" aria-describedby="vendedoresTitle">
+            <!-- Los elementos se cargarán dinámicamente aquí -->
+        </div>
+
+        <!-- Botón de cierre -->
+        <button id="closeVendedores" class="btn-close" aria-label="Cerrar modal">
+            Cerrar
+        </button>
     </div>
 </div>

@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", function() {
                         <span>Ruta</span>
                         <span>Fecha</span>
                         <span>Hora</span>
-                        <span></span> <!-- Espacio para el botón de lupa -->
+                        <span></span> 
                     </div>
                 `;
 

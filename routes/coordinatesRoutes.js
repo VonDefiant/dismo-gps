@@ -1,100 +1,97 @@
 const express = require('express');
 const router = express.Router();
 const pool = require('../db');
-const logger = require('../logger');
-const { 
-    coordinateValidations,
-    reconstructionValidations 
-} = require('../middleware/validation');
-const { rateLimiterAPI } = require('../security/rateLimiters');
-const { validationResult } = require('express-validator');
 
-// Middleware de seguridad
-router.use((req, res, next) => {
-    res.set({
-        'X-Content-Type-Options': 'nosniff',
-        'Strict-Transport-Security': 'max-age=31536000'
-    });
-    next();
+// Ruta para insertar nuevas coordenadas
+router.post('/', async (req, res) => {
+    const { latitude, longitude, timestamp, isSuspicious, id_ruta, battery } = req.body;
+    try {
+        const result = await pool.query(
+            'INSERT INTO coordinates (latitude, longitude, timestamp, vpn_validation, id_ruta, battery) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+            [latitude, longitude, timestamp, isSuspicious, id_ruta, battery]
+        );
+        res.status(201).json(result.rows[0]);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error al guardar las coordenadas');
+    }
 });
 
-// Ruta POST para insertar coordenadas (corregida)
-router.post('/', 
-    rateLimiterAPI,
-    ...coordinateValidations,
-    async (req, res) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() });
-        }
-
-        const { latitude, longitude, timestamp, isSuspicious, id_ruta, battery } = req.body;
-        
-        try {
-            const result = await pool.query(
-                'INSERT INTO coordinates (latitude, longitude, timestamp, vpn_validation, id_ruta, battery) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
-                [latitude, longitude, timestamp, isSuspicious, id_ruta, battery]
-            );
-            
-            logger.info(`Coordenada insertada para ruta ${id_ruta}`);
-            res.status(201).json(result.rows[0]);
-            
-        } catch (err) {
-            logger.error('Error en POST /coordinates:', err.stack);
-            res.status(500).json({ 
-                error: 'Error interno del servidor',
-                code: `COORD-${Date.now()}` 
-            });
-        }
-});
-
-// Resto de rutas (manteniendo tu lógica original pero optimizadas)
-router.get('/latest-coordinates', rateLimiterAPI, async (req, res) => {
+// Ruta para obtener las últimas coordenadas (incluye el nivel de batería)
+router.get('/latest-coordinates', async (req, res) => {
     try {
         const result = await pool.query(`
-            SELECT DISTINCT ON (id_ruta) *
-            FROM coordinates
-            ORDER BY id_ruta, timestamp DESC
+            SELECT id, latitude, longitude, id_ruta, timestamp, vpn_validation, battery FROM coordinates
+            WHERE (id_ruta, timestamp) IN (
+                SELECT id_ruta, MAX(timestamp)
+                FROM coordinates
+                GROUP BY id_ruta
+            );
         `);
         res.json(result.rows);
     } catch (err) {
-        logger.error('Error en GET /latest-coordinates:', err.stack);
-        res.status(500).json({ error: 'Error al obtener coordenadas' });
+        console.error('Error al obtener las coordenadas:', err);
+        res.status(500).send('Error al obtener las coordenadas');
     }
 });
 
-router.get('/getUniqueRutas', rateLimiterAPI, async (req, res) => {
+// Ruta GET para obtener los id_ruta únicos
+router.get('/getUniqueRutas', async (req, res) => {
     try {
         const result = await pool.query("SELECT DISTINCT id_ruta FROM coordinates");
-        res.json(result.rows.map(row => row.id_ruta));
+        const rutas = result.rows.map(row => row.id_ruta);
+        res.json(rutas);
     } catch (err) {
-        logger.error('Error en GET /getUniqueRutas:', err.stack);
-        res.status(500).json({ error: 'Error al obtener rutas' });
+        console.error('Error al obtener los id_ruta:', err);
+        res.status(500).send('Error al obtener las rutas');
     }
 });
 
-router.get('/reconstruirRecorrido', 
-    rateLimiterAPI,
-    ...reconstructionValidations,
-    async (req, res) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+// Ruta GET para reconstruir el recorrido según id_ruta y fecha (incluye el nivel de batería)
+router.get('/reconstruirRecorrido', async (req, res) => {
+    const { id_ruta, fecha } = req.query;
 
-        const { id_ruta, fecha } = req.query;
-        
-        try {
-            const result = await pool.query(`
-                SELECT * 
-                FROM coordinates 
-                WHERE id_ruta = $1 AND DATE(timestamp) = $2
-                ORDER BY timestamp`,
-                [id_ruta, fecha]
+    console.log(`Consulta recibida para id_ruta: ${id_ruta} y fecha: ${fecha}`); // Para depurar
+
+    try {
+        const result = await pool.query(`
+            SELECT latitude, longitude, timestamp, vpn_validation, id_ruta, battery
+            FROM coordinates    
+            WHERE id_ruta = $1 AND DATE(timestamp) = $2::date
+        `, [id_ruta, fecha]);
+
+        console.log(`Resultado de la consulta: ${JSON.stringify(result.rows)}`); // Para ver el resultado
+
+        res.json(result.rows);
+    } catch (err) {
+        console.error('Error al obtener las coordenadas:', err);
+        res.status(500).send('Error al obtener las coordenadas');
+    }
+});
+
+
+// Ruta para obtener todas las últimas coordenadas para cada id_ruta
+router.get('/all-latest', async (req, res) => {
+    try {
+        const result = await pool.query(`
+            SELECT id, latitude, longitude, id_ruta, timestamp, vpn_validation, battery FROM coordinates
+            WHERE (id_ruta, timestamp) IN (
+                SELECT id_ruta, MAX(timestamp)
+                FROM coordinates
+                GROUP BY id_ruta
             );
-            res.json(result.rows);
-        } catch (err) {
-            logger.error(`Error en GET /reconstruirRecorrido: ${err.stack}`);
-            res.status(500).json({ error: 'Error al reconstruir recorrido' });
-        }
+        `);
+        res.json(result.rows);
+    } catch (err) {
+        console.error('Error al obtener las coordenadas:', err);
+        res.status(500).send('Error al obtener las coordenadas');
+    }
+});
+
+
+// Ruta GET para pruebas
+router.get('/', (req, res) => {
+    res.status(200).send('Atlas sabe donde estas!');
 });
 
 module.exports = router;
