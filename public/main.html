@@ -1,31 +1,20 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <link rel="icon" href="icon.png" type="image/png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DISMO GPS</title>
+    
+    <link rel="icon" href="icon.png" type="image/png">
+    
+    <!-- Estilos -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
     <link rel="stylesheet" href="/css/leaflet.css">
-    <!-- Cargar el CSS del modal dinámico de reconstrucción y vendedores -->
     <link rel="stylesheet" href="/css/reconstruccion.css">
-    <style>
-        /* Estilos para el contenedor donde cargaremos el menú de reconstrucción */
-        #reconstruccionContainer {
-            position: fixed;
-            z-index: 10000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: none; 
-            justify-content: center;
-            align-items: center;
-        }
 
-        /* Estilos para el contenedor donde cargaremos el menú de vendedores */
-        #vendedoresContainer {
+    <style>
+        /* Estilos para el fondo de los modales */
+        .modal-background {
             position: fixed;
             z-index: 10000;
             left: 0;
@@ -33,22 +22,26 @@
             width: 100%;
             height: 100%;
             background-color: rgba(0, 0, 0, 0.5);
-            display: none; 
+            display: none;
             justify-content: center;
             align-items: center;
         }
     </style>
 </head>
 <body>
+
     <header>
         <button id="menu-toggle">&#9776;</button>
         <div class="barra-amarilla"></div>
     </header>
+
     <div id="map" style="height: 90vh;"></div>
 
-    <div id="reconstruccionContainer"></div>
-    <!-- Contenedor para el menú de vendedores -->
-    <div id="vendedoresContainer" class="modal-background" style="display: none;">
+    <!-- Contenedor para reconstrucción -->
+    <div id="reconstruccionContainer" class="modal-background"></div>
+
+    <!-- Contenedor para vendedores -->
+    <div id="vendedoresContainer" class="modal-background">
         <div class="modal-content">
             <h2>Vendedores</h2>
             <div id="vendedoresData" class="vendedores-list"></div>
@@ -56,29 +49,63 @@
         </div>
     </div>
 
-
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script src="/scripts/main.js"></script>
-    <script src="/scripts/menulateral.js"></script>
+    <!-- En tu main.html -->
+    <div id="vtaxfamiliaContainer" class="modal-background"></div>
 
     <!-- Sidebar -->
     <div id="sidebar" class="sidebar">
         <img src="logo.png" alt="Logo" class="sidebar-logo">
-    
+
         <ul class="menu">
-            <li><a href="#" id="inicioBtn">Inicio</a></li>  
-            <li><a href="#" id="reconstruccionBtn">Reconstrucción del recorrido</a></li>
-            <li><a href="#" id="ventasBtn">Consultar venta x familia</a></li>      
-            <li><a href="#" id="vendedoresBtn">Vendedores Activos</a></li>
-            <li><a href="#" onclick="logout()">Cerrar Sesión</a></li>
+            <li>
+                <a href="#inicio" id="inicioBtn" class="menu-item" role="menuitem" tabindex="0">
+                    <span class="menu-icon">🏠</span>
+                    <span class="menu-text">Inicio</span>
+                </a>
+            </li>
+            <li>
+                <a href="#reconstruccion" id="reconstruccionBtn" class="menu-item" role="menuitem" tabindex="0">
+                    <span class="menu-icon">🗺️</span>
+                    <span class="menu-text">Reconstruir Recorrido</span>
+                </a>
+            </li>
+            <li>
+                <a href="#reconstruccion" id="vtaxfamiliaBtn" class="menu-item" role="menuitem" tabindex="0">
+                    <span class="menu-icon">💰</span>
+                    <span class="menu-text">Ventas por Familia</span>
+                </a>
+            </li>    
+            <li>
+                <a href="#vendedores" id="vendedoresBtn" class="menu-item" role="menuitem" tabindex="0">
+                    <span class="menu-icon">👥</span>
+                    <span class="menu-text">Vendedores Activos</span>
+                </a>
+            </li>
+            <li>
+                <li>
+                    <a href="#configuraciones" id="configuracionesBtn" class="menu-item" role="menuitem" tabindex="0">
+                        <span class="menu-icon">⚙️</span>
+                        <span class="menu-text">Configuraciones</span>
+                    </a>
+                </li>
+                <li>
+                <a href="#" onclick="logout()">
+                    <span class="menu-icon">🔒</span>
+                    <span class="menu-text">Cerrar Sesión</span>              
+                </a>
+            </li>
         </ul>
         <div class="sidebar-footer"></div>
     </div>
 
-    <!-- Cargar script de logout -->
-    <script src="/scripts/logout.js"></script>
-    <script src="/scripts/reconstruccion.js"></script>
-    <script src="/scripts/menuRutas.js"></script>
+    <!-- Scripts -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="/scripts/main.js" defer></script>
+    <script src="/scripts/menulateral.js" defer></script>
+    <script src="/scripts/logout.js" defer></script>
+    <script src="/scripts/reconstruccion.js" defer></script>
+    <script src="/scripts/menuRutas.js" defer></script>
+    <script src="/scripts/vtaxfamilia.js" defer></script>
 
 </body>
 </html>

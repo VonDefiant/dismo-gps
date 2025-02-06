@@ -2,9 +2,9 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../db');
 
-// Ruta para insertar múltiples registros en ventaxfamilia
+// 🔹 Ruta para insertar múltiples registros en ventaxfamilia
 router.post('/', async (req, res) => {
-    const sales = req.body; // Recibimos un arreglo de registros
+    const sales = req.body;
 
     // Validación básica
     if (!Array.isArray(sales) || sales.length === 0) {
@@ -12,10 +12,13 @@ router.post('/', async (req, res) => {
     }
 
     try {
+        // Iniciar una transacción
+        await pool.query('BEGIN');
+
+        // Construcción de la consulta dinámica
         const query = `
             INSERT INTO ventaxfamilia (ruta, cod_fam, descripcion, venta, coberturas, fecha)
-            VALUES 
-            ${sales.map((_, i) => `($${i * 6 + 1}, $${i * 6 + 2}, $${i * 6 + 3}, $${i * 6 + 4}, $${i * 6 + 5}, $${i * 6 + 6})`).join(', ')}
+            VALUES ${sales.map((_, i) => `($${i * 6 + 1}, $${i * 6 + 2}, $${i * 6 + 3}, $${i * 6 + 4}, $${i * 6 + 5}, $${i * 6 + 6})`).join(', ')}
             RETURNING *;
         `;
 
@@ -28,26 +31,21 @@ router.post('/', async (req, res) => {
             sale.fecha
         ]);
 
-        // Ejecutamos el query
         const result = await pool.query(query, values);
+        await pool.query('COMMIT'); // Confirmar la transacción
 
         res.status(201).json({
             message: 'Registros insertados exitosamente.',
             data: result.rows,
         });
     } catch (err) {
+        await pool.query('ROLLBACK'); // Deshacer la transacción en caso de error
         console.error('Error al insertar registros:', err.message);
         res.status(500).json({ error: 'Error al insertar los registros en la base de datos.' });
     }
 });
 
-// Ruta GET para pruebas
-router.get('/', (req, res) => {
-    res.status(200).send('Atlas sabe donde estas!');
-});
-module.exports = router;
-
-// Ruta para consultar registros filtrados por ruta y fecha
+// 🔹 Ruta para consultar ventas por ruta y fecha
 router.get('/query', async (req, res) => {
     const { ruta, fecha } = req.query;
 
@@ -57,15 +55,15 @@ router.get('/query', async (req, res) => {
 
     try {
         const query = `
-            SELECT DISTINCT ON (cod_fam)
-                cod_fam,
-                descripcion,
-                venta,
-                coberturas,
-                fecha
+        SELECT DISTINCT ON (cod_fam) 
+        cod_fam, 
+        descripcion, 
+        CONCAT('Q ', venta::text) AS venta, 
+        TRUNC(coberturas)::int AS coberturas, 
+        fecha
             FROM ventaxfamilia
             WHERE ruta = $1 AND DATE(fecha) = $2
-            ORDER BY cod_fam, fecha DESC;
+            ORDER BY cod_fam ASC, fecha DESC;
         `;
 
         const values = [ruta, fecha];
@@ -77,3 +75,22 @@ router.get('/query', async (req, res) => {
         res.status(500).json({ error: 'Error al consultar registros en la base de datos.' });
     }
 });
+
+// Ruta GET para obtener los id_ruta únicos
+router.get('/getUniqueRutasvta', async (req, res) => {
+    try {
+        const result = await pool.query("SELECT DISTINCT ruta FROM ventaxfamilia");
+        const rutas = result.rows.map(row => row.ruta);
+        res.json(rutas);
+    } catch (err) {
+        console.error('Error al obtener los id_ruta:', err);
+        res.status(500).send('Error al obtener las rutas');
+    }
+});
+
+// 🔹 Ruta GET de prueba
+router.get('/', (req, res) => {
+    res.status(200).send('Atlas sabe dónde estás!');
+});
+// 🔴 Exportar router después de definir todas las rutas
+module.exports = router;
