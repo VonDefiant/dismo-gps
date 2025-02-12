@@ -168,3 +168,65 @@ body {
 
 
 
+/* Estilos para el contenedor del modal */
+#vtaxfamiliaContainer {
+    display: none; /* Oculto por defecto */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo semitransparente */
+    align-items: center; /* Centrar verticalmente */
+    justify-content: center; /* Centrar horizontalmente */
+    z-index: 1000; /* Asegurarse de que esté encima de otros elementos */
+}
+
+/* Estilos para el contenido del modal */
+#vtaxfamiliaContainer .modal-content {
+    width: 400px;
+    min-height: 300px;
+    background-color: #1d3f7d;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Estilos del título dentro del modal */
+#vtaxfamiliaContainer .modal-content h3 {
+    color: white;
+    margin-bottom: 10px;
+    font-size: 16px; /* Tamaño reducido del título */
+}
+
+/* Estilo para el encabezado de información (ruta y fecha) */
+#vtaxfamiliaContainer .modal-content div {
+    color: white;
+    margin-bottom: 20px;
+    font-size: 12px; /* Tamaño reducido de texto */
+}
+
+/* Estilos para la tabla */
+#vtaxfamiliaContainer .modal-content table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 10px; /* Tamaño reducido para la tabla */
+}
+
+#vtaxfamiliaContainer .modal-content th,
+#vtaxfamiliaContainer .modal-content td {
+    border: 1px solid white;
+    padding: 5px;
+    text-align: center;
+}
+
+#vtaxfamiliaContainer .modal-content thead tr {
+    background-color: #fab925;
+    color: white;
+}
+
+
