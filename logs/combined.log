@@ -118,3 +118,271 @@
 2025-02-05 21:37:02 [INFO] Sesión establecida 
 2025-02-06 19:32:02 [INFO] Intentando iniciar sesión para: admin 
 2025-02-06 19:32:03 [INFO] Sesión establecida 
+2025-02-17 15:42:43 [INFO] Intentando iniciar sesión para: admin 
+2025-02-17 15:42:44 [INFO] Sesión establecida para admin (Admin: true) 
+2025-02-17 15:58:02 [INFO] Intentando iniciar sesión para: admin'-- 
+2025-02-17 15:58:03 [WARN] Usuario no encontrado 
+2025-02-17 15:58:58 [INFO] Intentando iniciar sesión para: admin'-- 
+2025-02-17 15:58:59 [WARN] Usuario no encontrado 
+2025-02-17 15:59:43 [INFO] Intentando iniciar sesión para: admin 
+2025-02-17 15:59:44 [INFO] Sesión establecida para admin (Admin: true) 
+2025-02-19 15:34:48 [INFO] ✅ Servidor corriendo en el puerto 5006 
+2025-02-19 15:34:48 [HTTP] GET / - ::ffff:127.0.0.1 
+2025-02-19 15:34:49 [HTTP] GET /login - ::ffff:127.0.0.1 
+2025-02-19 15:34:53 [HTTP] GET / - ::ffff:127.0.0.1 
+2025-02-19 15:34:53 [HTTP] GET /login - ::ffff:127.0.0.1 
+2025-02-19 15:34:59 [HTTP] GET /css/styles.css - ::ffff:127.0.0.1 
+2025-02-19 15:35:04 [HTTP] POST /auth/login - ::ffff:127.0.0.1 
+2025-02-19 15:40:31 [INFO] ✅ Servidor corriendo en el puerto 5006 
+2025-02-19 15:40:37 [HTTP] POST /auth/login - ::1 
+2025-02-19 15:40:37 [INFO] 🟢 Intentando iniciar sesión para: admin 
+2025-02-19 15:40:43 [ERROR] ❌ Error al iniciar sesión para admin: getaddrinfo ENOTFOUND c3nv2ev86aje4j.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com 
+2025-02-19 15:40:43 [HTTP] GET /favicon.ico - ::1 
+2025-02-19 15:40:43 [WARN] Ruta no encontrada: /favicon.ico 
+2025-02-19 15:40:46 [HTTP] POST /auth/login - ::1 
+2025-02-19 15:40:46 [INFO] 🟢 Intentando iniciar sesión para: admin 
+2025-02-19 15:40:56 [HTTP] POST /auth/login - ::1 
+2025-02-19 15:40:56 [INFO] 🟢 Intentando iniciar sesión para: admin 
+2025-02-19 15:41:21 [HTTP] GET /login - ::1 
+2025-02-19 15:41:21 [HTTP] GET /css/styles.css - ::1 
+2025-02-19 15:41:21 [HTTP] GET /icon.png - ::1 
+2025-02-19 15:41:27 [HTTP] POST /auth/login - ::1 
+2025-02-19 15:41:27 [INFO] 🟢 Intentando iniciar sesión para: admin 
+2025-02-19 15:41:44 [INFO] ✅ Sesión iniciada para admin (Admin: true) 
+2025-02-19 15:41:44 [INFO] ✅ Sesión iniciada para admin (Admin: true) 
+2025-02-19 15:41:46 [HTTP] GET /css/styles.css - ::1 
+2025-02-19 15:41:49 [HTTP] GET /login - ::1 
+2025-02-19 15:41:49 [HTTP] GET /css/styles.css - ::1 
+2025-02-19 15:41:49 [HTTP] GET /icon.png - ::1 
+2025-02-19 15:41:56 [HTTP] POST /auth/login - ::1 
+2025-02-19 15:41:56 [INFO] 🟢 Intentando iniciar sesión para: admin 
+2025-02-19 15:42:02 [INFO] ✅ Sesión iniciada para admin (Admin: true) 
+2025-02-19 15:42:04 [INFO] ✅ Sesión iniciada para admin (Admin: true) 
+2025-02-19 15:42:04 [HTTP] GET /main - ::1 
+2025-02-19 15:42:04 [HTTP] GET /css/leaflet.css - ::1 
+2025-02-19 15:42:04 [HTTP] GET /css/reconstruccion.css - ::1 
+2025-02-19 15:42:04 [HTTP] GET /logo.png - ::1 
+2025-02-19 15:42:04 [HTTP] GET /scripts/main.js - ::1 
+2025-02-19 15:42:04 [HTTP] GET /scripts/menulateral.js - ::1 
+2025-02-19 15:42:04 [HTTP] GET /scripts/logout.js - ::1 
+2025-02-19 15:42:04 [HTTP] GET /scripts/reconstruccion.js - ::1 
+2025-02-19 15:42:04 [HTTP] GET /scripts/menuRutas.js - ::1 
+2025-02-19 15:42:04 [HTTP] GET /scripts/vtaxfamilia.js - ::1 
+2025-02-19 15:42:04 [HTTP] GET /scripts/admin.js - ::1 
+2025-02-19 15:42:04 [HTTP] GET /coordinates/latest-coordinates - ::1 
+2025-02-19 15:42:05 [HTTP] GET /icons/marker-icon-2x.png - ::1 
+2025-02-19 15:42:05 [HTTP] GET /icons/marker-shadow.png - ::1 
+2025-02-19 15:42:19 [HTTP] GET /reconstruccion.html - ::1 
+2025-02-19 15:42:19 [HTTP] GET /CATTOGRAFO.png - ::1 
+2025-02-19 15:42:19 [HTTP] GET /coordinates/getUniqueRutas - ::1 
+2025-02-19 15:42:23 [HTTP] GET /coordinates/reconstruirRecorrido?id_ruta=G412&fecha=2025-02-19 - ::1 
+2025-02-19 16:12:14 [INFO] ✅ Servidor corriendo en el puerto 5006 
+2025-02-19 16:12:40 [HTTP] GET /coordinates/latest-coordinates - ::1 
+2025-02-19 16:12:41 [HTTP] GET /icons/marker-icon-2x.png - ::1 
+2025-02-19 16:12:41 [HTTP] GET /icons/marker-shadow.png - ::1 
+2025-02-19 16:12:53 [HTTP] GET /main - ::1 
+2025-02-19 16:12:53 [WARN] Intento de acceso no autorizado. 
+2025-02-19 16:12:53 [HTTP] GET /login - ::1 
+2025-02-19 16:12:53 [HTTP] GET /css/styles.css - ::1 
+2025-02-19 16:12:53 [HTTP] GET /icon.png - ::1 
+2025-02-19 16:13:00 [HTTP] POST /auth/login - ::1 
+2025-02-19 16:13:00 [INFO] 🟢 Intentando iniciar sesión para: admin 
+2025-02-19 16:13:01 [INFO] ✅ Sesión iniciada para admin (Admin: true) 
+2025-02-19 16:13:01 [HTTP] GET /main - ::1 
+2025-02-19 16:13:01 [HTTP] GET /css/leaflet.css - ::1 
+2025-02-19 16:13:01 [HTTP] GET /css/reconstruccion.css - ::1 
+2025-02-19 16:13:01 [HTTP] GET /scripts/main.js - ::1 
+2025-02-19 16:13:01 [HTTP] GET /logo.png - ::1 
+2025-02-19 16:13:01 [HTTP] GET /scripts/logout.js - ::1 
+2025-02-19 16:13:01 [HTTP] GET /scripts/menulateral.js - ::1 
+2025-02-19 16:13:01 [HTTP] GET /scripts/reconstruccion.js - ::1 
+2025-02-19 16:13:01 [HTTP] GET /scripts/menuRutas.js - ::1 
+2025-02-19 16:13:01 [HTTP] GET /scripts/vtaxfamilia.js - ::1 
+2025-02-19 16:13:01 [HTTP] GET /scripts/admin.js - ::1 
+2025-02-19 16:13:01 [HTTP] GET /coordinates/latest-coordinates - ::1 
+2025-02-19 16:13:01 [HTTP] GET /icons/marker-icon-2x.png - ::1 
+2025-02-19 16:13:01 [HTTP] GET /icons/marker-shadow.png - ::1 
+2025-02-19 16:13:04 [HTTP] GET /reconstruccion.html - ::1 
+2025-02-19 16:13:04 [HTTP] GET /CATTOGRAFO.png - ::1 
+2025-02-19 16:13:04 [HTTP] GET /coordinates/getUniqueRutas - ::1 
+2025-02-19 16:13:07 [HTTP] GET /coordinates/reconstruirRecorrido?id_ruta=G421&fecha=2025-02-19 - ::1 
+2025-02-19 16:13:10 [HTTP] GET /coordinates/latest-coordinates - ::1 
+2025-02-19 16:40:01 [INFO] ✅ Servidor corriendo en el puerto 5006 
+2025-02-19 16:44:06 [HTTP] GET /coordinates/latest-coordinates - ::1 
+2025-02-19 16:44:07 [HTTP] GET /main - ::1 
+2025-02-19 16:44:07 [WARN] Intento de acceso no autorizado. 
+2025-02-19 16:44:07 [HTTP] GET /login - ::1 
+2025-02-19 16:44:07 [HTTP] GET /css/styles.css - ::1 
+2025-02-19 16:44:07 [HTTP] GET /icon.png - ::1 
+2025-02-19 16:44:14 [HTTP] POST /auth/login - ::1 
+2025-02-19 16:44:30 [HTTP] POST /auth/login - ::1 
+2025-02-19 16:44:33 [HTTP] POST /auth/login - ::1 
+2025-02-19 16:44:39 [HTTP] POST /auth/login - ::1 
+2025-02-19 16:49:19 [INFO] ✅ Servidor corriendo en el puerto 5006 
+2025-02-19 16:49:22 [HTTP] POST /auth/login - ::1 
+2025-02-19 16:49:27 [HTTP] POST /auth/login - ::1 
+2025-02-19 16:49:33 [HTTP] POST /auth/login - ::1 
+2025-02-19 16:51:28 [INFO] ✅ Servidor corriendo en el puerto 5006 
+2025-02-19 16:51:43 [HTTP] GET /auth/login - ::1 
+2025-02-19 16:51:46 [HTTP] GET /auth/login - ::1 
+2025-02-19 16:51:49 [HTTP] POST /auth/login - ::1 
+2025-02-19 16:51:52 [HTTP] POST /auth/login - ::1 
+2025-02-19 16:51:56 [HTTP] POST /auth/login - ::1 
+2025-02-19 16:57:29 [INFO] ✅ Servidor corriendo en el puerto 5006 
+2025-02-19 16:58:00 [HTTP] POST /auth/login - ::1 
+2025-02-19 16:58:08 [HTTP] POST /auth/login - ::1 
+2025-02-19 16:58:27 [HTTP] GET /login - ::1 
+2025-02-19 16:58:28 [HTTP] GET /login - ::1 
+2025-02-19 16:58:34 [HTTP] GET / - ::1 
+2025-02-19 16:58:34 [HTTP] GET /login - ::1 
+2025-02-19 16:58:36 [HTTP] GET /login - ::1 
+2025-02-19 16:58:37 [HTTP] GET /login - ::1 
+2025-02-19 16:58:37 [HTTP] GET /login - ::1 
+2025-02-19 16:58:46 [INFO] ✅ Servidor corriendo en el puerto 5006 
+2025-02-19 16:58:52 [HTTP] GET / - ::1 
+2025-02-19 16:58:52 [HTTP] GET /login - ::1 
+2025-02-19 16:59:05 [HTTP] GET /login - ::1 
+2025-02-19 16:59:06 [HTTP] GET /login - ::1 
+2025-02-19 16:59:06 [HTTP] GET /login - ::1 
+2025-02-19 16:59:10 [HTTP] GET /login - ::1 
+2025-02-19 16:59:15 [HTTP] GET /login - ::1 
+2025-02-19 16:59:15 [HTTP] GET /login - ::1 
+2025-02-19 16:59:16 [HTTP] GET /login - ::1 
+2025-02-19 16:59:21 [INFO] ✅ Servidor corriendo en el puerto 5006 
+2025-02-19 17:00:06 [HTTP] GET /login - ::1 
+2025-02-19 17:00:07 [HTTP] GET /login - ::1 
+2025-02-19 17:00:14 [HTTP] GET /auth/login - ::1 
+2025-02-19 17:01:52 [HTTP] GET /auth/login - ::1 
+2025-02-19 17:02:03 [INFO] ✅ Servidor corriendo en el puerto 5006 
+2025-02-19 17:02:13 [HTTP] GET /auth/login - ::1 
+2025-02-19 17:02:14 [HTTP] GET /auth/login - ::1 
+2025-02-19 17:02:14 [HTTP] GET /auth/login - ::1 
+2025-02-19 17:02:14 [HTTP] GET /auth/login - ::1 
+2025-02-19 17:02:44 [INFO] ✅ Servidor corriendo en el puerto 5006 
+2025-02-19 17:02:49 [HTTP] GET /auth/login - ::1 
+2025-02-19 17:02:49 [HTTP] GET /css/styles.css - ::1 
+2025-02-19 17:02:49 [HTTP] GET /auth/icon.png - ::1 
+2025-02-19 17:02:49 [WARN] Ruta no encontrada: /auth/icon.png 
+2025-02-19 17:02:58 [HTTP] POST /auth/login - ::1 
+2025-02-19 17:02:59 [INFO] 🟢 Intentando iniciar sesión para: admin 
+2025-02-19 17:03:00 [INFO] ✅ Sesión iniciada para admin (Admin: true) 
+2025-02-19 17:03:00 [HTTP] GET /main - ::1 
+2025-02-19 17:03:00 [HTTP] GET /scripts/main.js - ::1 
+2025-02-19 17:03:00 [HTTP] GET /scripts/logout.js - ::1 
+2025-02-19 17:03:00 [HTTP] GET /logo.png - ::1 
+2025-02-19 17:03:00 [HTTP] GET /css/reconstruccion.css - ::1 
+2025-02-19 17:03:00 [HTTP] GET /css/leaflet.css - ::1 
+2025-02-19 17:03:00 [HTTP] GET /scripts/menulateral.js - ::1 
+2025-02-19 17:03:00 [HTTP] GET /scripts/reconstruccion.js - ::1 
+2025-02-19 17:03:00 [HTTP] GET /scripts/menuRutas.js - ::1 
+2025-02-19 17:03:00 [HTTP] GET /scripts/vtaxfamilia.js - ::1 
+2025-02-19 17:03:00 [HTTP] GET /scripts/admin.js - ::1 
+2025-02-19 17:03:00 [HTTP] GET /coordinates/latest-coordinates - ::1 
+2025-02-19 17:03:00 [HTTP] GET /icon.png - ::1 
+2025-02-19 17:03:10 [HTTP] GET /css/leaflet.css - ::1 
+2025-02-19 17:03:10 [HTTP] GET /css/reconstruccion.css - ::1 
+2025-02-19 17:03:33 [INFO] ✅ Servidor corriendo en el puerto 5006 
+2025-02-19 17:03:33 [HTTP] GET /coordinates/latest-coordinates - ::1 
+2025-02-19 17:04:01 [HTTP] GET /coordinates/latest-coordinates - ::1 
+2025-02-19 17:04:01 [HTTP] GET /main - ::1 
+2025-02-19 17:04:01 [WARN] Intento de acceso no autorizado. 
+2025-02-19 17:04:01 [HTTP] GET /login - ::1 
+2025-02-19 17:04:03 [HTTP] GET /login - ::1 
+2025-02-19 17:04:03 [HTTP] GET /login - ::1 
+2025-02-19 17:07:14 [HTTP] GET /login - ::1 
+2025-02-19 17:07:15 [HTTP] GET /login - ::1 
+2025-02-19 17:07:18 [HTTP] GET /auth/login - ::1 
+2025-02-19 17:10:58 [HTTP] GET / - ::1 
+2025-02-19 17:10:58 [HTTP] GET /login - ::1 
+2025-02-19 17:11:24 [INFO] ✅ Servidor corriendo en el puerto 5006 
+2025-02-19 17:11:24 [HTTP] GET /login - ::1 
+2025-02-19 17:11:32 [HTTP] GET /login - ::1 
+2025-02-19 17:11:33 [HTTP] GET /login - ::1 
+2025-02-19 17:11:33 [HTTP] GET /login - ::1 
+2025-02-19 17:11:33 [HTTP] GET /login - ::1 
+2025-02-19 17:11:36 [HTTP] GET /main - ::1 
+2025-02-19 17:11:36 [WARN] Intento de acceso no autorizado. 
+2025-02-19 17:11:36 [HTTP] GET /login - ::1 
+2025-02-19 17:12:17 [INFO] ✅ Servidor corriendo en el puerto 5006 
+2025-02-19 17:12:21 [HTTP] GET / - ::1 
+2025-02-19 17:12:21 [HTTP] GET /login - ::1 
+2025-02-19 17:12:22 [HTTP] GET /css/styles.css - ::1 
+2025-02-19 17:12:22 [HTTP] GET /icon.png - ::1 
+2025-02-19 17:12:38 [HTTP] POST /auth/login - ::1 
+2025-02-19 17:20:08 [INFO] ✅ Servidor corriendo en el puerto 5006 
+2025-02-19 17:21:04 [HTTP] POST /auth/login - ::1 
+2025-02-19 17:22:01 [HTTP] GET /main - ::1 
+2025-02-19 17:22:01 [WARN] Intento de acceso no autorizado. 
+2025-02-19 17:22:01 [HTTP] GET /login - ::1 
+2025-02-19 17:22:04 [HTTP] GET /login - ::1 
+2025-02-19 17:22:04 [HTTP] GET /login - ::1 
+2025-02-19 17:22:04 [HTTP] GET /login - ::1 
+2025-02-19 17:22:05 [HTTP] GET /login - ::1 
+2025-02-19 17:23:36 [HTTP] GET /login - ::1 
+2025-02-19 17:23:37 [HTTP] GET /login - ::1 
+2025-02-19 17:23:45 [INFO] ✅ Servidor corriendo en el puerto 5006 
+2025-02-19 17:24:08 [HTTP] GET /login - ::1 
+2025-02-19 17:24:08 [HTTP] GET /login - ::1 
+2025-02-19 17:24:09 [HTTP] GET /login - ::1 
+2025-02-19 17:24:09 [HTTP] GET /login - ::1 
+2025-02-19 17:24:09 [HTTP] GET /login - ::1 
+2025-02-19 17:25:19 [HTTP] GET /login - ::1 
+2025-02-19 17:25:59 [HTTP] GET /login - ::1 
+2025-02-19 17:25:59 [HTTP] GET /login - ::1 
+2025-02-19 17:26:04 [INFO] ✅ Servidor corriendo en el puerto 5006 
+2025-02-19 17:26:05 [HTTP] GET /login - ::1 
+2025-02-19 17:26:05 [HTTP] GET /login - ::1 
+2025-02-19 17:27:19 [HTTP] GET /login - ::1 
+2025-02-19 17:27:20 [HTTP] GET /login - ::1 
+2025-02-19 17:27:20 [HTTP] GET /login - ::1 
+2025-02-19 17:27:42 [INFO] ✅ Servidor corriendo en el puerto 5006 
+2025-02-19 17:28:47 [HTTP] GET /login - ::1 
+2025-02-19 17:28:52 [INFO] ✅ Servidor corriendo en el puerto 5006 
+2025-02-19 17:28:53 [HTTP] GET /login - ::1 
+2025-02-19 17:28:53 [HTTP] GET /css/styles.css - ::1 
+2025-02-19 17:28:54 [HTTP] GET /login - ::1 
+2025-02-19 17:28:54 [HTTP] GET /css/styles.css - ::1 
+2025-02-19 17:28:54 [HTTP] GET /icon.png - ::1 
+2025-02-19 17:29:02 [HTTP] POST /auth/login - ::1 
+2025-02-19 17:29:31 [INFO] 🟢 Intentando iniciar sesión para: admin 
+2025-02-19 17:29:31 [INFO] ✅ Sesión iniciada para admin (Admin: true) 
+2025-02-19 17:29:40 [INFO] 📌 Consultando recorrido para id_ruta: G305 y fecha: 2025-02-19 
+2025-02-19 17:29:48 [INFO] 📌 Consultando recorrido para id_ruta: G413 y fecha: 2025-02-19 
+2025-02-19 17:30:33 [INFO] ✅ Servidor corriendo en el puerto 5006 
+2025-02-19 17:30:35 [HTTP] POST /auth/login - ::1 
+2025-02-19 17:30:36 [HTTP] GET /css/styles.css - ::1 
+2025-02-19 17:30:37 [HTTP] POST /auth/login - ::1 
+2025-02-19 17:30:46 [INFO] ✅ Servidor corriendo en el puerto 5006 
+2025-02-19 17:30:50 [HTTP] POST /auth/login - ::1 
+2025-02-19 17:30:50 [HTTP] POST /auth/login - ::1 
+2025-02-19 17:30:52 [HTTP] POST /auth/login - ::1 
+2025-02-19 17:31:02 [INFO] ✅ Servidor corriendo en el puerto 5006 
+2025-02-19 17:31:05 [HTTP] POST /auth/login - ::1 
+2025-02-19 17:31:05 [HTTP] POST /auth/login - ::1 
+2025-02-19 17:31:30 [HTTP] POST /auth/login - ::1 
+2025-02-19 17:31:38 [INFO] ✅ Servidor corriendo en el puerto 5006 
+2025-02-19 17:31:40 [HTTP] POST /auth/login - ::1 
+2025-02-19 17:31:50 [HTTP] POST /auth/login - ::1 
+2025-02-19 17:31:50 [HTTP] POST /auth/login - ::1 
+2025-02-19 17:31:54 [INFO] ✅ Servidor corriendo en el puerto 5006 
+2025-02-19 17:31:55 [HTTP] POST /auth/login - ::1 
+2025-02-19 17:31:56 [HTTP] POST /auth/login - ::1 
+2025-02-19 17:31:57 [HTTP] POST /auth/login - ::1 
+2025-02-19 17:32:03 [HTTP] POST /auth/login - ::1 
+2025-02-19 17:32:04 [HTTP] POST /auth/login - ::1 
+2025-02-19 17:32:08 [INFO] ✅ Servidor corriendo en el puerto 5006 
+2025-02-19 17:32:10 [HTTP] POST /auth/login - ::1 
+2025-02-19 17:32:11 [HTTP] POST /auth/login - ::1 
+2025-02-19 17:32:11 [HTTP] POST /auth/login - ::1 
+2025-02-19 17:32:12 [HTTP] POST /auth/login - ::1 
+2025-02-19 17:32:44 [INFO] ✅ Servidor corriendo en el puerto 5006 
+2025-02-19 17:32:46 [HTTP] POST /auth/login - ::1 
+2025-02-19 17:32:51 [HTTP] POST /auth/login - ::1 
+2025-02-19 17:32:56 [HTTP] POST /auth/login - ::1 
+2025-02-19 17:32:57 [HTTP] POST /auth/login - ::1 
+2025-02-19 17:33:21 [HTTP] POST /auth/login - ::1 
+2025-02-19 17:33:30 [INFO] ✅ Servidor corriendo en el puerto 5006 
+2025-02-19 17:33:31 [HTTP] POST /auth/login - ::1 
+2025-02-19 17:33:39 [HTTP] POST /auth/login - ::1 
+2025-02-19 17:34:44 [INFO] 🟢 Intentando iniciar sesión para: admin 
+2025-02-19 17:34:45 [INFO] ✅ Sesión iniciada para admin (Admin: true) 
