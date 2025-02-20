@@ -8,14 +8,14 @@ router.post('/', async (req, res) => {
     const deviceId = req.headers['device-id']; // 📌 Extraemos el GUID desde el header
     const ip = req.ip;
 
-    console.log(`🔍 GUID recibido: ${deviceId}`);
-    
+    console.log(`🔍 GUID recibido: ${deviceId} | Ruta: ${id_ruta}`);
+
     if (!deviceId) {
         return res.status(400).json({ error: 'Device-ID requerido en el header' });
     }
 
     try {
-        // 🔍 Verificar si el GUID está autorizado en la base de datos (CORREGIDO)
+        // 🔍 Verificar si el GUID está autorizado en la base de datos
         const checkDevice = await pool.query(
             'SELECT * FROM dispositivos_autorizados WHERE guid = $1 AND ruta = $2',
             [deviceId, id_ruta]
@@ -23,14 +23,14 @@ router.post('/', async (req, res) => {
 
         const autorizado = checkDevice.rows.length > 0 ? 'permitido' : 'denegado';
 
-        // 📌 Registrar intento en `logs_acceso`
+        // 📌 Registrar intento en `logs_acceso` con la fecha actual
         await pool.query(
-            'INSERT INTO logs_acceso (gui, ruta, estado, ip) VALUES ($1, $2, $3, $4)',
+            'INSERT INTO logs_acceso (guid, ruta, estado, ip, fecha) VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP)',
             [deviceId, id_ruta, autorizado, ip]
         );
 
         if (autorizado === 'denegado') {
-            console.log(`🚫 Dispositivo no autorizado: ${deviceId} para la ruta ${id_ruta}`);
+            console.log(`🚫 Dispositivo NO autorizado: ${deviceId} | Ruta: ${id_ruta}`);
             return res.status(403).json({ error: 'Dispositivo no autorizado' });
         }
 
@@ -40,7 +40,7 @@ router.post('/', async (req, res) => {
             [latitude, longitude, timestamp, isSuspicious, id_ruta, battery]
         );
 
-        console.log(`✅ Coordenadas registradas correctamente para el GUID: ${deviceId}`);
+        console.log(`✅ Coordenadas registradas correctamente | GUID: ${deviceId} | Ruta: ${id_ruta}`);
         res.status(201).json(result.rows[0]);
     } catch (err) {
         console.error('❌ Error al guardar las coordenadas:', err);
@@ -52,7 +52,8 @@ router.post('/', async (req, res) => {
 router.get('/latest-coordinates', async (req, res) => {
     try {
         const result = await pool.query(`
-            SELECT id, latitude, longitude, id_ruta, timestamp, vpn_validation, battery FROM coordinates
+            SELECT id, latitude, longitude, id_ruta, timestamp, vpn_validation, battery 
+            FROM coordinates
             WHERE (id_ruta, timestamp) IN (
                 SELECT id_ruta, MAX(timestamp)
                 FROM coordinates
@@ -103,7 +104,8 @@ router.get('/reconstruirRecorrido', async (req, res) => {
 router.get('/all-latest', async (req, res) => {
     try {
         const result = await pool.query(`
-            SELECT id, latitude, longitude, id_ruta, timestamp, vpn_validation, battery FROM coordinates
+            SELECT id, latitude, longitude, id_ruta, timestamp, vpn_validation, battery 
+            FROM coordinates
             WHERE (id_ruta, timestamp) IN (
                 SELECT id_ruta, MAX(timestamp)
                 FROM coordinates
