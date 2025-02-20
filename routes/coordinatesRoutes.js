@@ -2,31 +2,35 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../db');
 
-
 // 📌 Ruta para insertar nuevas coordenadas con validación y logs
 router.post('/', async (req, res) => {
     const { latitude, longitude, timestamp, isSuspicious, id_ruta, battery } = req.body;
     const deviceId = req.headers['device-id']; // 📌 Extraemos el GUID desde el header
     const ip = req.ip;
 
+    console.log(`🔍 GUID recibido: ${deviceId}`);
+    
     if (!deviceId) {
         return res.status(400).json({ error: 'Device-ID requerido en el header' });
     }
 
     try {
-        // 🔍 Verificar si el GUID está autorizado en la base de datos
+        // 🔍 Verificar si el GUID está autorizado en la base de datos (CORREGIDO)
         const checkDevice = await pool.query(
-            'SELECT * FROM dispositivos_autorizados WHERE imei = $1 AND ruta = $2',
+            'SELECT * FROM dispositivos_autorizados WHERE guid = $1 AND ruta = $2',
             [deviceId, id_ruta]
         );
+
+        const autorizado = checkDevice.rows.length > 0 ? 'permitido' : 'denegado';
 
         // 📌 Registrar intento en `logs_acceso`
         await pool.query(
             'INSERT INTO logs_acceso (gui, ruta, estado, ip) VALUES ($1, $2, $3, $4)',
-            [deviceId, id_ruta, checkDevice.rows.length > 0 ? 'permitido' : 'denegado', ip]
+            [deviceId, id_ruta, autorizado, ip]
         );
 
-        if (checkDevice.rows.length === 0) {
+        if (autorizado === 'denegado') {
+            console.log(`🚫 Dispositivo no autorizado: ${deviceId} para la ruta ${id_ruta}`);
             return res.status(403).json({ error: 'Dispositivo no autorizado' });
         }
 
@@ -36,13 +40,13 @@ router.post('/', async (req, res) => {
             [latitude, longitude, timestamp, isSuspicious, id_ruta, battery]
         );
 
+        console.log(`✅ Coordenadas registradas correctamente para el GUID: ${deviceId}`);
         res.status(201).json(result.rows[0]);
     } catch (err) {
         console.error('❌ Error al guardar las coordenadas:', err);
         res.status(500).send('Error al guardar las coordenadas');
     }
 });
-
 
 // 📌 Ruta para obtener las últimas coordenadas
 router.get('/latest-coordinates', async (req, res) => {
