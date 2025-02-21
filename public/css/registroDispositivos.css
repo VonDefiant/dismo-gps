@@ -1,0 +1,103 @@
+/* Ajustar la posición del modal */
+.dispositivos-modal-background {
+    position: fixed;
+    z-index: 10000;
+    left: 0;
+    top: 5%;  /* Subir el modal más arriba */
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Contenedor del modal */
+.dispositivos-modal-content {
+    background-color: #002f6c; /* Azul oscuro */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 15px white(0, 0, 0, 0.3);
+    width: 60%;
+    height: 70vh; /* Hacerlo más alto */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start; /* Alinear elementos desde arriba */
+}
+
+/* Título del modal */
+.dispositivos-modal-content h2 {
+    margin-bottom: 10px; /* Reducir espacio entre título y tabla */
+    color: white;
+    text-align: center;
+}
+
+/* Contenedor de la tabla */
+.dispositivos-table-container {
+    width: 100%;
+    height: 65%; /* Mayor espacio para la tabla */
+    overflow-y: auto; /* Agregar scroll si es necesario */
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Asegurar que la tabla inicie desde arriba */
+    margin-top: 5px; /* Reducir espacio entre el título y la tabla */
+}
+
+/* Estilos de la tabla */
+.dispositivos-table {
+    width: 90%;
+    border-collapse: collapse;
+    text-align: center;
+}
+
+/* Hacer que los encabezados sean fijos */
+.dispositivos-table thead {
+    position: sticky;
+    top: 0;
+    background-color: #ffb300;
+    z-index: 10;
+}
+
+/* Estilos de las celdas con bordes */
+.dispositivos-table th, .dispositivos-table td {
+    border: 1px solid #ddd; /* Borde en todas las celdas */
+    padding: 10px;
+}
+
+/* Estilos de las celdas */
+.dispositivos-table th {
+    background-color: #ffb300;
+    padding: 10px;
+    color: white;
+    text-transform: uppercase;
+}
+
+.dispositivos-table td {
+    background-color: transparent;
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+}
+
+/* Contenedor de botones */
+.dispositivos-button-container {
+    display: flex;
+    justify-content: space-evenly;
+    width: 100%;
+    padding: 10px 0;
+    margin-top: auto; /* Empujar los botones hacia la parte inferior */
+}
+
+/* Estilos de los botones */
+.dispositivos-btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.dispositivos-salir { background-color: red; }
+.dispositivos-editar { background-color: blue; }
+.dispositivos-anadir { background-color: green; }

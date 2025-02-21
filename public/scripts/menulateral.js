@@ -14,3 +14,20 @@ document.addEventListener('click', function(event) {
         sidebar.style.left = '-250px'; // Ocultar el menú
     }
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+    const configBtn = document.getElementById("configuracionesBtn");
+    const submenu = document.getElementById("submenuConfiguraciones");
+
+    configBtn.addEventListener("click", function (event) {
+        event.preventDefault(); // Evita que se refresque la página
+        submenu.style.display = submenu.style.display === "block" ? "none" : "block";
+    });
+
+    // Opcional: Cerrar el submenú si se hace clic fuera
+    document.addEventListener("click", function (event) {
+        if (!configBtn.contains(event.target) && !submenu.contains(event.target)) {
+            submenu.style.display = "none";
+        }
+    });
+});
