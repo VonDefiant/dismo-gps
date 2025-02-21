@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
     <link rel="stylesheet" href="/css/leaflet.css">
     <link rel="stylesheet" href="/css/reconstruccion.css">
+    <link rel="stylesheet" href="/css/registroDispositivos.css">
 
     <style>
         /* Estilos para el fondo de los modales */
@@ -36,6 +37,8 @@
     </header>
 
     <div id="map" style="height: 90vh;"></div>
+
+    <div id="registroDispositivosPlaceholder"></div>
 
     <!-- Contenedor para reconstrucción -->
     <div id="reconstruccionContainer" class="modal-background"></div>
@@ -85,11 +88,17 @@
             </li>
             <li>
                 <li>
-                    <a href="#configuraciones" id="configuracionesBtn" class="menu-item" role="menuitem" tabindex="0">
+                    <a href="#" id="configuracionesBtn" class="menu-item">
                         <span class="menu-icon">⚙️</span>
                         <span class="menu-text">Configuraciones</span>
                     </a>
-                </li>
+                    <!-- Submenú -->
+                    <ul class="submenu" id="submenuConfiguraciones">
+                        <li><a href="#" id="registroDispositivosBtn">📱 Dispositivos</a></li>
+                        <li><a href="#" id="logsEntradaBtn">📜 Logs de Entrada</a></li>
+                        <li><a href="#" id="parametrosBtn">⚙️ Parámetros</a></li>
+                    </ul>
+                </li>                
                 <li>
                 <a href="#" onclick="logout()">
                     <span class="menu-icon">🔒</span>
@@ -108,7 +117,8 @@
     <script src="/scripts/reconstruccion.js" defer></script>
     <script src="/scripts/menuRutas.js" defer></script>
     <script src="/scripts/vtaxfamilia.js" defer></script>
-    <script src="/scripts/admin.js" defer></script>
-    
+    <script src="/scripts/registroDispositivos.js" defer></script>
+
+
 </body>
 </html>

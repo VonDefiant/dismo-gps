@@ -386,3 +386,11 @@
 2025-02-19 17:33:39 [HTTP] POST /auth/login - ::1 
 2025-02-19 17:34:44 [INFO] 🟢 Intentando iniciar sesión para: admin 
 2025-02-19 17:34:45 [INFO] ✅ Sesión iniciada para admin (Admin: true) 
+2025-02-20 00:41:51 [INFO] 🟢 Intentando iniciar sesión para: admin 
+2025-02-20 00:41:52 [INFO] ✅ Sesión iniciada para admin (Admin: true) 
+2025-02-20 14:59:36 [INFO] 🟢 Intentando iniciar sesión para: admin 
+2025-02-20 14:59:37 [INFO] ✅ Sesión iniciada para admin (Admin: true) 
+2025-02-20 17:53:21 [INFO] 🟢 Intentando iniciar sesión para: admin 
+2025-02-20 17:53:22 [INFO] ✅ Sesión iniciada para admin (Admin: true) 
+2025-02-20 17:54:27 [INFO] 🟢 Intentando iniciar sesión para: admin 
+2025-02-20 17:54:27 [INFO] ✅ Sesión iniciada para admin (Admin: true) 
