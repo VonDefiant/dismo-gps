@@ -1,0 +1,110 @@
+<div class="nuevo-dispositivo-modal-background" id="nuevoDispositivoContainer">
+    <div class="nuevo-dispositivo-modal-content">
+        <h2>Registro de nuevos dispositivos</h2>
+        <input type="text" id="nuevaRuta" placeholder="ESCRIBE EL NUMERO DE RUTA">
+        <input type="text" id="nuevoGuid" placeholder="ESCRIBE EL NUMERO DE GUID">
+        <div class="nuevo-dispositivo-button-container">
+            <button id="cerrarNuevoDispositivo" class="nuevo-dispositivo-btn salir">CERRAR</button>
+            <button id="guardarNuevoDispositivo" class="nuevo-dispositivo-btn anadir">AÑADIR</button>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Estilos del modal de nuevo dispositivo */
+.nuevo-dispositivo-modal-background {
+    position: fixed;
+    z-index: 10000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+
+.nuevo-dispositivo-modal-content {
+    background-color: #002f6c;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.3);
+    width: 40%;
+    height: 40vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.nuevo-dispositivo-modal-content input {
+    width: 80%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border: none;
+    text-align: center;
+}
+
+.nuevo-dispositivo-button-container {
+    display: flex;
+    justify-content: space-evenly;
+    width: 100%;
+}
+
+.nuevo-dispositivo-btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.nuevo-dispositivo-btn.salir { background-color: red; }
+.nuevo-dispositivo-btn.anadir { background-color: green; }
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const modal = document.getElementById("nuevoDispositivoContainer");
+    const abrirBtn = document.getElementById("anadirConfig");
+    const cerrarBtn = document.getElementById("cerrarNuevoDispositivo");
+    const guardarBtn = document.getElementById("guardarNuevoDispositivo");
+    
+    abrirBtn.addEventListener("click", function () {
+        modal.style.display = "flex";
+    });
+    
+    cerrarBtn.addEventListener("click", function () {
+        modal.style.display = "none";
+    });
+
+    guardarBtn.addEventListener("click", function () {
+        const ruta = document.getElementById("nuevaRuta").value.trim();
+        const guid = document.getElementById("nuevoGuid").value.trim();
+        
+        if (ruta === "" || guid === "") {
+            alert("Por favor, llena todos los campos");
+            return;
+        }
+        
+        fetch('/admin/dispositivos', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ruta, imei: guid })
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert("Dispositivo añadido correctamente");
+            modal.style.display = "none";
+            location.reload(); 
+        })
+        .catch(error => {
+            console.error("❌ Error al añadir dispositivo:", error);
+            alert("Hubo un error al registrar el dispositivo");
+        });
+    });
+});
+</script>
