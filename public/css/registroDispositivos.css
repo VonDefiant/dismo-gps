@@ -99,5 +99,5 @@
 }
 
 .dispositivos-salir { background-color: red; }
-.dispositivos-editar { background-color: blue; }
+.editar-btn { background-color: rgb(25, 130, 169); }
 .dispositivos-anadir { background-color: green; }

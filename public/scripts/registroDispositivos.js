@@ -17,11 +17,23 @@ function cargarRegistroDispositivos() {
 
 function configurarEventosDispositivos() {
     console.log("🔧 Configurando eventos del modal de dispositivos...");
-
+    setTimeout(() => {
+        if (!document.getElementById("editarDispositivoContainer")) {
+            console.log("🛠 Cargando el modal de edición...");
+            fetch('/registroNuevoDispositivo.html')
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('registroDispositivosPlaceholder').insertAdjacentHTML("beforeend", html);
+                    console.log("✅ Modal de edición cargado.");
+                })
+                .catch(error => console.error("❌ Error cargando el modal de edición:", error));
+        }
+    }, 300);
+    
     const dispositivosBtn = document.getElementById("registroDispositivosBtn");
     const dispositivosModal = document.getElementById("registroDispositivosContainer");
     const dispositivosSalirBtn = document.getElementById("salirRegistroDispositivos");
-    const dispositivosAnadirBtn = document.getElementById("anadirRegistroDispositivos"); 
+    const dispositivosAnadirBtn = document.getElementById("anadirRegistroDispositivos");
 
     if (!dispositivosModal) {
         console.error("❌ Error: No se encontró el modal registroDispositivosContainer");
@@ -53,19 +65,18 @@ function cargarFormularioNuevoDispositivo() {
         .then(response => response.text())
         .then(html => {
             console.log("✅ Formulario de nuevo dispositivo cargado en el DOM.");
-            
-            const placeholder = document.getElementById('registroDispositivosPlaceholder');
-            placeholder.innerHTML += html; 
 
-            // Esperar a que el DOM cargue completamente antes de interactuar con el modal
+            const placeholder = document.getElementById('registroDispositivosPlaceholder');
+            placeholder.insertAdjacentHTML("beforeend", html);
+
             setTimeout(() => {
-                const nuevoDispositivoModal = document.getElementById("nuevoDispositivoContainer");
+                const nuevoDispositivoModal = document.getElementById("registroNuevoDispositivoContainer");
                 if (!nuevoDispositivoModal) {
-                    console.error("❌ Error: No se encontró el modal 'nuevoDispositivoContainer'");
+                    console.error("❌ Error: No se encontró el modal 'registroNuevoDispositivoContainer'");
                     return;
                 }
-                nuevoDispositivoModal.style.display = "flex";
 
+                nuevoDispositivoModal.style.display = "flex";
                 configurarEventosNuevoDispositivo();
             }, 300);
         })
@@ -74,7 +85,7 @@ function cargarFormularioNuevoDispositivo() {
 
 // 🔹 Configurar eventos para el modal de nuevo dispositivo
 function configurarEventosNuevoDispositivo() {
-    const modal = document.getElementById("nuevoDispositivoContainer");
+    const modal = document.getElementById("registroNuevoDispositivoContainer");
     const cerrarBtn = document.getElementById("cerrarNuevoDispositivo");
     const guardarBtn = document.getElementById("guardarNuevoDispositivo");
 
@@ -87,34 +98,45 @@ function configurarEventosNuevoDispositivo() {
         modal.style.display = "none";
     });
 
-    guardarBtn.addEventListener("click", function () {
-        const ruta = document.getElementById("nuevaRuta").value.trim();
-        const guid = document.getElementById("nuevoGuid").value.trim();
+    guardarBtn.removeEventListener("click", guardarDispositivo);
+    guardarBtn.addEventListener("click", guardarDispositivo);
+}
 
-        if (ruta === "" || guid === "") {
-            alert("Por favor, llena todos los campos");
-            return;
+// ✅ Nueva función para guardar el dispositivo y evitar duplicación
+function guardarDispositivo() {
+    const ruta = document.getElementById("nuevaRuta").value.trim();
+    const guid = document.getElementById("nuevoGuid").value.trim();
+
+    if (ruta === "" || guid === "") {
+        alert("⚠️ Por favor, llena todos los campos");
+        return;
+    }
+
+    fetch('/admin/dispositivos', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ruta, imei: guid })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error("❌ Error en la respuesta del servidor");
         }
-
-        fetch('/admin/dispositivos', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ ruta, imei: guid })
-        })
-        .then(response => response.json())
-        .then(data => {
-            alert("Dispositivo añadido correctamente");
-            modal.style.display = "none";
-            cargarListaDispositivos(); 
-        })
-        .catch(error => {
-            console.error("❌ Error al añadir dispositivo:", error);
-            alert("Hubo un error al registrar el dispositivo");
-        });
+        return response.json();
+    })
+    .then(data => {
+        alert("✅ Dispositivo añadido correctamente");
+        document.getElementById("nuevaRuta").value = "";
+        document.getElementById("nuevoGuid").value = "";
+        document.getElementById("registroNuevoDispositivoContainer").style.display = "none";
+        cargarListaDispositivos();
+    })
+    .catch(error => {
+        console.error("❌ Error al añadir dispositivo:", error);
+        alert("⚠️ Hubo un error al registrar el dispositivo");
     });
 }
 
-// ✅ Cargar dispositivos desde el backend y ordenarlos por ruta
+// ✅ Cargar dispositivos y agregar botón de edición
 function cargarListaDispositivos() {
     fetch('/admin/dispositivos')
         .then(response => response.json())
@@ -124,10 +146,7 @@ function cargarListaDispositivos() {
                 console.error("❌ Error: No se encontró la tabla de dispositivos.");
                 return;
             }
-
-            tbody.innerHTML = ''; // Limpiar contenido previo
-
-            // 📌 Ordenar los dispositivos por la columna "ruta" (de menor a mayor)
+            tbody.innerHTML = ''; 
             data.sort((a, b) => a.ruta.localeCompare(b.ruta, 'es', { numeric: true }));
 
             data.forEach(dispositivo => {
@@ -136,11 +155,70 @@ function cargarListaDispositivos() {
                     <td>${dispositivo.ruta}</td>
                     <td>${dispositivo.guid || 'N/A'}</td>
                     <td>${dispositivo.fecha_registro ? new Date(dispositivo.fecha_registro).toLocaleDateString() : 'N/A'}</td>
+                    <td>
+                        <button class="editar-btn" data-id="${dispositivo.guid}" data-ruta="${dispositivo.ruta}">✏️</button>
+                    </td>
                 `;
                 tbody.appendChild(row);
             });
 
-            console.log("✅ Datos de dispositivos cargados y ordenados correctamente.");
+            document.querySelectorAll(".editar-btn").forEach(btn => {
+                btn.addEventListener("click", function () {
+                    const guid = this.getAttribute("data-id");
+                    const ruta = this.getAttribute("data-ruta");
+                    abrirModalEdicion(guid, ruta);
+                });
+            });
         })
         .catch(error => console.error('❌ Error cargando dispositivos:', error));
+}
+
+// ✅ Función para abrir el modal de edición
+function abrirModalEdicion(guid, ruta) {
+    const modal = document.getElementById("editarDispositivoContainer");
+    const inputRuta = document.getElementById("editarRuta");
+    const inputGuid = document.getElementById("editarGuid");
+
+    if (!modal || !inputRuta || !inputGuid) {
+        console.error("❌ Error: No se encontró el modal o los inputs de edición.");
+        return;
+    }
+
+    inputRuta.value = ruta;
+    inputGuid.value = guid;
+
+    modal.style.display = "flex";
+
+    // 🔹 Agregar el evento al botón de cerrar
+    const cerrarBtn = document.getElementById("cerrarEditarDispositivo");
+    if (cerrarBtn) {
+        cerrarBtn.removeEventListener("click", cerrarModalEdicion); // Evita duplicar eventos
+        cerrarBtn.addEventListener("click", cerrarModalEdicion);
+    }
+
+    // 🔹 Agregar el evento de guardar
+    document.getElementById("guardarEditarDispositivo").onclick = function () {
+        editarDispositivo(guid);
+    };
+}
+
+// ✅ Función para cerrar el modal de edición
+function cerrarModalEdicion() {
+    document.getElementById("editarDispositivoContainer").style.display = "none";
+}
+
+// ✅ Función para editar el dispositivo
+function editarDispositivo(guid) {
+    const nuevaRuta = document.getElementById("editarRuta").value.trim();
+    const nuevoGuid = document.getElementById("editarGuid").value.trim();
+
+    fetch(`/admin/dispositivos/${guid}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ruta: nuevaRuta, nuevoGuid })
+    })
+    .then(() => {
+        document.getElementById("editarDispositivoContainer").style.display = "none";
+        cargarListaDispositivos();
+    });
 }
