@@ -1,16 +1,72 @@
-<div class="nuevo-dispositivo-modal-background" id="nuevoDispositivoContainer">
+<div class="nuevo-dispositivo-modal-background" id="registroNuevoDispositivoContainer">
     <div class="nuevo-dispositivo-modal-content">
         <h2>Registro de nuevos dispositivos</h2>
         <input type="text" id="nuevaRuta" placeholder="ESCRIBE EL NUMERO DE RUTA">
         <input type="text" id="nuevoGuid" placeholder="ESCRIBE EL NUMERO DE GUID">
         <div class="nuevo-dispositivo-button-container">
-            <button id="cerrarNuevoDispositivo" class="nuevo-dispositivo-btn salir">CERRAR</button>
-            <button id="guardarNuevoDispositivo" class="nuevo-dispositivo-btn anadir">AÑADIR</button>
+            <button id="cerrarNuevoDispositivo" class="nuevo-dispositivo-btn salir">Cerrar</button>
+            <button id="guardarNuevoDispositivo" class="nuevo-dispositivo-btn anadir">Añadir</button>
+        </div>
+    </div>
+</div>
+
+<div class="editar-dispositivo-modal-background" id="editarDispositivoContainer">
+    <div class="editar-dispositivo-modal-content">
+        <h2>Editar Dispositivo</h2>
+        <input type="text" id="editarRuta" placeholder="NUEVA RUTA">
+        <input type="text" id="editarGuid" placeholder="NUEVO GUID">
+        <div class="editar-dispositivo-button-container">
+            <button id="cerrarEditarDispositivo" class="editar-dispositivo-btn salir">Cerrar</button>
+            <button id="guardarEditarDispositivo" class="editar-dispositivo-btn guardar">guardar</button>
         </div>
     </div>
 </div>
 
 <style>
+.editar-dispositivo-modal-content input {
+    width: 85%; 
+    padding: 12px; 
+    font-size: 18px; 
+    text-align: center;
+}
+
+    .editar-dispositivo-modal-background {
+    background-color: #002f6c;    
+    position: fixed;
+    z-index: 10000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+
+.editar-dispositivo-modal-content {
+    background-color: #002f6c;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.3);
+    width: 80%;
+    max-width: 300px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+}
+
+.editar-dispositivo-btn {
+        padding: 12px 25px;
+        font-size: 18px;
+        color: white !important; 
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
 /* Estilos del modal de nuevo dispositivo */
 .nuevo-dispositivo-modal-background {
     position: fixed;
@@ -28,14 +84,15 @@
 .nuevo-dispositivo-modal-content {
     background-color: #002f6c;
     padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.3);
-    width: 40%;
-    height: 40vh;
+    border-radius: 12px;
+    box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.3);
+    width: 80%; /* Reducido para hacerlo más angosto */
+    max-width: 300px; /* Limita el tamaño máximo */
+    text-align: center;
     display: flex;
     flex-direction: column;
+    gap: 15px;
     align-items: center;
-    justify-content: space-evenly;
 }
 
 .nuevo-dispositivo-modal-content input {
@@ -62,21 +119,25 @@
     cursor: pointer;
 }
 
+.editar-dispositivo-btn.salir { background-color: red; }
+.editar-dispositivo-btn.guardar { background-color: green; }
 .nuevo-dispositivo-btn.salir { background-color: red; }
 .nuevo-dispositivo-btn.anadir { background-color: green; }
 </style>
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-    const modal = document.getElementById("nuevoDispositivoContainer");
+    const modal = document.getElementById("registroNuevoDispositivoContainer"); // ID corregido
     const abrirBtn = document.getElementById("anadirConfig");
     const cerrarBtn = document.getElementById("cerrarNuevoDispositivo");
     const guardarBtn = document.getElementById("guardarNuevoDispositivo");
     
-    abrirBtn.addEventListener("click", function () {
-        modal.style.display = "flex";
-    });
-    
+    if (abrirBtn) {
+        abrirBtn.addEventListener("click", function () {
+            modal.style.display = "flex";
+        });
+    }
+
     cerrarBtn.addEventListener("click", function () {
         modal.style.display = "none";
     });
@@ -107,4 +168,5 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
+
 </script>
