@@ -23,27 +23,26 @@ router.post('/', async (req, res) => {
 
         const autorizado = checkDevice.rows.length > 0 ? 'permitido' : 'denegado';
 
-        // 📌 Registrar intento en `logs_acceso` con la fecha actual
+        // 📌 Registrar intento en `logs_acceso`
         await pool.query(
-            'INSERT INTO logs_acceso (guid, ruta, estado, ip, fecha) VALUES ($1, $2, $3, $4, NOW())',
+            'INSERT INTO logs_acceso (guid, ruta, estado, ip, fecha) VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP)',
             [deviceId, id_ruta, autorizado, ip]
         );
 
         if (autorizado === 'denegado') {
-            console.log(`🚫 Dispositivo NO autorizado: ${deviceId} | Ruta: ${id_ruta}`);
-            return res.status(403).json({ error: 'Dispositivo no autorizado' });
+            console.log(`⚠️ Dispositivo NO autorizado: ${deviceId} | Ruta: ${id_ruta}`);
+        } else {
+            // 📌 Insertar coordenadas si el dispositivo está autorizado
+            if (latitude !== undefined && longitude !== undefined && timestamp !== undefined) {
+                await pool.query(
+                    'INSERT INTO coordinates (latitude, longitude, timestamp, vpn_validation, id_ruta, battery) VALUES ($1, $2, $3, $4, $5, $6)',
+                    [latitude, longitude, timestamp, isSuspicious || false, id_ruta, battery || 0]
+                );
+                console.log(`✅ Coordenadas registradas | GUID: ${deviceId} | Ruta: ${id_ruta}`);
+            }
         }
 
-        // 📌 Insertar coordenadas en la base de datos (si se reciben)
-        if (latitude && longitude) {
-            await pool.query(
-                'INSERT INTO coordinates (latitude, longitude, timestamp, vpn_validation, id_ruta, battery) VALUES ($1, $2, $3, $4, $5, $6)',
-                [latitude, longitude, timestamp, isSuspicious, id_ruta, battery]
-            );
-            console.log(`✅ Coordenadas registradas | GUID: ${deviceId} | Ruta: ${id_ruta}`);
-        }
-
-        // 📌 Procesar token FCM
+        // 📌 Guardar o actualizar el token FCM incluso si el dispositivo no está autorizado
         if (token) {
             await pool.query(
                 `INSERT INTO firebase_tokens (id_ruta, dispositivo_guid, token)
@@ -62,7 +61,7 @@ router.post('/', async (req, res) => {
     }
 });
 
-// 📌 Ruta para obtener todos los tokens registrados
+// 📌 Ruta para obtener los últimos tokens registrados
 router.get('/tokens', async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM firebase_tokens');
