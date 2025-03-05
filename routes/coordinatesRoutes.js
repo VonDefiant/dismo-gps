@@ -25,7 +25,7 @@ router.post('/', async (req, res) => {
 
         // 📌 Registrar intento en `logs_acceso` con la fecha actual
         await pool.query(
-            'INSERT INTO logs_acceso (guid, ruta, estado, ip, fecha) VALUES ($1, $2, $3, $4, $5)',
+            'INSERT INTO logs_acceso (guid, ruta, estado, ip, fecha) VALUES ($1, $2, $3, $4, NOW())',
             [deviceId, id_ruta, autorizado, ip]
         );
 
