@@ -133,4 +133,10 @@ router.post('/token', async (req, res) => {
     }
 });
 
+// 📌 Ruta de prueba
+router.get('/', (req, res) => {
+    res.status(200).send(' Atlas sabe donde estás!');
+});
+
+
 module.exports = router;
