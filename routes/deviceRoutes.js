@@ -34,16 +34,7 @@ router.post('/token', async (req, res) => {
         });
     }
 });
-    
-    catch (err) {
-        console.error(`❌ Error al registrar token FCM: ${err.message}`);
-        console.error(err); // Imprimir el objeto de error completo por separado
-        res.status(500).json({ 
-            success: false, 
-            error: 'Error interno al procesar el token'
-        });
-    }
-});
+
 // 📌 Ruta de prueba
 router.get('/', (req, res) => {
     res.status(200).send(' Atlas sabe donde estás!');
