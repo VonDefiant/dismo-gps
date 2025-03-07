@@ -10,6 +10,7 @@ const mainRoutes = require('./routes/mainRoutes');
 const coordinatesRoutes = require('./routes/coordinatesRoutes');
 const salesRoutes = require('./routes/salesRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const deviceRoutes = require('./routes/deviceRoutes');
 
 // Middleware para sesiones
 app.use(session({
@@ -61,6 +62,7 @@ app.use('/main', isAuthenticated, mainRoutes);
 app.use('/admin', isAdminAuthenticated, adminRoutes); // Usa el middleware de admin
 app.use('/coordinates', coordinatesRoutes);
 app.use('/sales', salesRoutes);
+app.use('/device', deviceRoutes);
 
 // Cerrar sesión
 app.post('/logout', (req, res) => {
