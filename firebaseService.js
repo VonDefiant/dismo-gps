@@ -4,12 +4,27 @@ const path = require('path');
 const { logger } = require('./logger');
 const pool = require('./db');
 
-// Inicializa Firebase Admin con las credenciales
-const serviceAccount = require('./dismogt-a30ec-firebase-adminsdk-fbsvc-429b7577e9.json');
+// Inicializa Firebase Admin con las credenciales desde variable de entorno o archivo
+let serviceAccount;
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
-});
+try {
+  if (process.env.FIREBASE_CREDENTIALS) {
+    // Para entorno de producción (Heroku)
+    serviceAccount = JSON.parse(process.env.FIREBASE_CREDENTIALS);
+    logger.info('Firebase inicializado con credenciales desde variable de entorno');
+  } else {
+    // Para entorno de desarrollo local
+    serviceAccount = require('./dismogt-a30ec-firebase-adminsdk-fbsvc-429b7577e9.json');
+    logger.info('Firebase inicializado con credenciales desde archivo local');
+  }
+
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount)
+  });
+} catch (error) {
+  logger.error(`Error al inicializar Firebase: ${error.message}`);
+  throw error; // Es importante que la aplicación falle si no puede configurar Firebase
+}
 
 class FirebaseService {
     constructor() {
