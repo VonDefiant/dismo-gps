@@ -11,6 +11,7 @@ const coordinatesRoutes = require('./routes/coordinatesRoutes');
 const salesRoutes = require('./routes/salesRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const deviceRoutes = require('./routes/deviceRoutes');
+const firebaseRoutes = require('./routes/firebaseRoutes'); // Importación correcta
 
 // Middleware para sesiones
 app.use(session({
@@ -59,11 +60,15 @@ function isAdminAuthenticated(req, res, next) {
 
 // Rutas protegidas
 app.use('/device', deviceRoutes);
+app.use('/api', firebaseRoutes); // Usa el nombre correcto
 app.use('/main', isAuthenticated, mainRoutes);
 app.use('/admin', isAdminAuthenticated, adminRoutes); // Usa el middleware de admin
 app.use('/coordinates', coordinatesRoutes);
 app.use('/sales', salesRoutes);
 
+// Rutas para archivos estáticos
+app.use('/css', express.static(path.join(__dirname, 'public/css')));
+app.use('/scripts', express.static(path.join(__dirname, 'public/scripts')));
 
 // Cerrar sesión
 app.post('/logout', (req, res) => {

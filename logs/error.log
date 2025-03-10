@@ -1,2 +1,12 @@
 2025-02-19 15:40:43 [ERROR] ❌ Error al iniciar sesión para admin: getaddrinfo ENOTFOUND c3nv2ev86aje4j.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com 
 2025-03-07 09:36:12 [ERROR] ❌ Error al registrar token FCM: value too long for type character varying(10) 
+2025-03-07 18:44:41 [ERROR] Error al enviar notificación multicast: this.messaging.sendMulticast is not a function 
+2025-03-07 18:58:02 [ERROR] Error al enviar notificación multicast: this.messaging.sendMulticast is not a function 
+2025-03-07 19:01:05 [ERROR] Error al enviar notificación multicast: this.messaging.sendMulticast is not a function 
+2025-03-07 19:01:12 [ERROR] Error al enviar notificación multicast: this.messaging.sendMulticast is not a function 
+2025-03-07 19:18:33 [ERROR] Error al enviar notificación push: Cannot read properties of undefined (reading 'title') 
+2025-03-07 19:18:50 [ERROR] Error al enviar notificación push: Cannot read properties of undefined (reading 'title') 
+2025-03-10 09:38:21 [ERROR] Error al enviar notificación push: notification must be a non-null object 
+2025-03-10 09:38:28 [ERROR] Error al enviar notificación push: notification must be a non-null object 
+2025-03-10 09:42:24 [ERROR] Error al enviar notificación push: notification must be a non-null object 
+2025-03-10 09:44:07 [ERROR] Error al enviar notificación push: notification must be a non-null object 
