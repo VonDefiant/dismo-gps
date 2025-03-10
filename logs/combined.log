@@ -591,3 +591,6 @@
 2025-03-10 14:56:01 [INFO] Notificación enviada con éxito: projects/dismogt-a30ec/messages/0:1741640162251951%75dd1363f9fd7ecd 
 2025-03-10 14:56:14 [INFO] Enviando mensaje con estructura: {"token":"eAd60rUsQZeXMP_OJvy-ab:APA91bGd57C3h0IWjJALZDjClMzbfGZS3FDZ-WQdE3QgssGJrla4bQ3Mz_uZx3oEhY252QhbifgPEpIQbQ4QZC3KvJSXB8XK7ZIRmbHwvxvkcDTlwWRCC9Q","data":{"title":"DISMOGT REPORTES","body":"No vendas para cerrar una transacción, vende para abrir una relación.","tipo":"location_update","action":"SYNC_DATA","ruta":"PRUEBA","timestamp":"2025-03-10T20:56:14.953Z"}} 
 2025-03-10 14:56:15 [INFO] Notificación enviada con éxito: projects/dismogt-a30ec/messages/0:1741640176065463%75dd1363f9fd7ecd 
+2025-03-10 15:40:00 [INFO] Firebase inicializado con credenciales desde variable de entorno 
+2025-03-10 15:40:40 [INFO] 🟢 Intentando iniciar sesión para: admin 
+2025-03-10 15:40:43 [INFO] ✅ Sesión iniciada para admin (Admin: true) 
