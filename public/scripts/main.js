@@ -153,7 +153,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function startUpdating() {
         console.log("Iniciando la actualización automática de las últimas ubicaciones.");
         updateMarkers(); // Llamar una vez para la primera actualización
-        updateInterval = setInterval(updateMarkers, 30000);  // Actualizar los marcadores cada 30 segundos
+        updateInterval = setInterval(updateMarkers, 60000);  // Actualizar los marcadores cada 30 segundos
     }
 
     // Función para detener el intervalo de actualización
