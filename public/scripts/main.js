@@ -5,6 +5,12 @@ var markerClusterGroup;
 document.addEventListener('DOMContentLoaded', function() {
     map = L.map('map').setView([14.6349, -90.5069], 13);
 
+    // OpenStreetMap como capa base predeterminada (no consume tokens de Mapbox)
+    const openStreetMap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors',
+        maxZoom: 19
+    }).addTo(map);
+
      // Token de Mapbox
      const mapboxToken = 'pk.eyJ1Ijoidm9uZGVmaWFudCIsImEiOiJjbTg0ejg0czEyNWNiMm5vb3JlbGhrMG5rIn0.Dj_dcfqOceb51BSzXtIGJg';
 
@@ -41,18 +47,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Crear objeto para el selector de capas base
     const baseMaps = {
+        "OpenStreetMap": openStreetMap,
         "Mapbox Calles": mapboxStreets,
         "Mapbox Satélite": mapboxSatellite,
         "Google Satélite": googleSatellite,
         "Google Híbrido": googleHybrid,
     };
 
-    // Establecer el estilo personalizado de DISMO como capa predeterminada
-    mapboxStreets.addTo(map);
-    
-    // Agregar el control de capas al mapa
-    L.control.layers(baseMaps, {}, {collapsed: false}).addTo(map);
+    // Agregar el control de capas agrupado al mapa (colapsado por defecto)
+    L.control.groupedLayers(baseMaps, {}, {
+        collapsed: true,
+        position: 'topright'
+    }).addTo(map);
 
+    // Establecer el estilo personalizado de DISMO como capa predeterminada
+    openStreetMap.addTo(map);
+    
     // Añadir control de escala
     L.control.scale({
         imperial: false,  // Solo mostrar escala métrica
