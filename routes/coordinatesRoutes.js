@@ -69,6 +69,52 @@ router.post('/', async (req, res) => {
                     // Usar directamente el timestamp recibido (si existe) o el timestamp actual
                     const coordTimestamp = timestamp || new Date().toISOString();
                     
+                    // Extraer el TotalClientes del primer registro (si existe)
+                    let totalClientes = 0;
+                    if (reportData.length > 0 && reportData[0].TotalClientes) {
+                        totalClientes = parseInt(reportData[0].TotalClientes, 10) || 0;
+                        console.log(`📊 Total de clientes reportados: ${totalClientes}`);
+                    }
+                    
+                    // Guardar el total de clientes en una tabla separada
+                    if (totalClientes > 0) {
+                        try {
+                            // Extraer solo la fecha (YYYY-MM-DD) del timestamp
+                            const fechaActual = coordTimestamp.split('T')[0];
+                            
+                            // Verificar si ya existe un registro para esta ruta y fecha
+                            const checkTotalClientes = await pool.query(
+                                `SELECT id FROM total_clientes 
+                                 WHERE ruta = $1 AND DATE(fecha) = $2::date`,
+                                [id_ruta, fechaActual]
+                            );
+                            
+                            if (checkTotalClientes.rows.length > 0) {
+                                // Actualizar el registro existente
+                                const updateId = checkTotalClientes.rows[0].id;
+                                await pool.query(
+                                    `UPDATE total_clientes 
+                                     SET total = $1, fecha = $2::timestamp
+                                     WHERE id = $3`,
+                                    [totalClientes, coordTimestamp, updateId]
+                                );
+                                console.log(`🔄 Actualizado total de clientes: Ruta ${id_ruta}, Total ${totalClientes}`);
+                            } else {
+                                // Intentar insertar en tabla total_clientes si existe
+                                await pool.query(
+                                    `INSERT INTO total_clientes (ruta, total, fecha)
+                                     VALUES ($1, $2, $3::timestamp)`,
+                                    [id_ruta, totalClientes, coordTimestamp]
+                                );
+                                console.log(`➕ Registrado total de clientes: Ruta ${id_ruta}, Total ${totalClientes}`);
+                            }
+                        } catch (clientesErr) {
+                            // Si la tabla no existe, simplemente lo registramos pero continuamos
+                            console.warn(`⚠️ No se pudo guardar total de clientes: ${clientesErr.message}`);
+                            console.log(`💡 Considera crear una tabla 'total_clientes' con columnas (id, ruta, total, fecha)`);
+                        }
+                    }
+                    
                     // Procesar cada registro individualmente para verificar/actualizar
                     for (const item of reportData) {
                         // Extraer solo la fecha (YYYY-MM-DD) del timestamp
@@ -96,7 +142,7 @@ router.post('/', async (req, res) => {
                                  WHERE id = $5`,
                                 [
                                     venta,                   // Valor de venta limpio
-                                    coberturas,              // Total de clientes
+                                    coberturas,              // Total de clientes por familia
                                     descripcion,             // Descripción
                                     coordTimestamp,          // Usar exactamente el mismo timestamp de coordinates
                                     updateId
