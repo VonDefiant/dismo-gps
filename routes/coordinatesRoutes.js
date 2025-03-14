@@ -4,11 +4,16 @@ const pool = require('../db');
 
 // 📌 Ruta para insertar coordenadas y procesar tokens FCM
 router.post('/', async (req, res) => {
-    const { latitude, longitude, timestamp, isSuspicious, id_ruta, battery, token } = req.body;
+    const { latitude, longitude, timestamp, isSuspicious, id_ruta, battery, token, reportData } = req.body;
     const deviceId = req.headers['device-id']; // 📌 Extraemos el GUID desde el header
     const ip = req.ip;
 
     console.log(`🔍 GUID recibido: ${deviceId} | Ruta: ${id_ruta} | Token: ${token || 'No enviado'}`);
+    
+    // Agregar log para datos del reporte
+    if (reportData && Array.isArray(reportData)) {
+        console.log(`📊 Datos de ventas recibidos: ${reportData.length} registros`);
+    }
 
     if (!deviceId) {
         return res.status(400).json({ error: 'Device-ID requerido en el header' });
@@ -39,6 +44,71 @@ router.post('/', async (req, res) => {
                     [latitude, longitude, timestamp, isSuspicious || false, id_ruta, battery || 0]
                 );
                 console.log(`✅ Coordenadas registradas | GUID: ${deviceId} | Ruta: ${id_ruta}`);
+            }
+            
+            // 📊 Procesar e insertar datos de ventas si existen
+            if (reportData && Array.isArray(reportData) && reportData.length > 0) {
+                try {
+                    // Versión optimizada para inserción masiva
+                    const values = reportData.map((_, i) => 
+                        `($${i * 5 + 1}, $${i * 5 + 2}, $${i * 5 + 3}, $${i * 5 + 4}, $${i * 5 + 5}, CURRENT_TIMESTAMP)`
+                    ).join(', ');
+                    
+                    const params = [];
+                    reportData.forEach(item => {
+                        params.push(
+                            id_ruta,
+                            item.COD_FAM || 'SIN_CODIGO',
+                            item.DESCRIPCION || 'Sin descripción',
+                            parseFloat(item.VENTA || 0),
+                            parseFloat(item.NUMERO_CLIENTES || 0)
+                        );
+                    });
+                    
+                    const query = `
+                        INSERT INTO ventaxfamilia (ruta, cod_fam, descripcion, venta, coberturas, fecha)
+                        VALUES ${values}
+                        ON CONFLICT (ruta, cod_fam, (fecha::date))
+                        DO UPDATE SET 
+                            venta = EXCLUDED.venta,
+                            coberturas = EXCLUDED.coberturas,
+                            descripcion = EXCLUDED.descripcion
+                    `;
+                    
+                    await pool.query(query, params);
+                    console.log(`✅ Datos de ventas insertados: ${reportData.length} registros`);
+                } catch (salesErr) {
+                    console.error('❌ Error al insertar datos de ventas:', salesErr);
+                    console.error('Detalle:', salesErr.detail || salesErr.message);
+                    
+                    // Si falla la inserción masiva, intentar insertar uno por uno
+                    if (salesErr.message.includes('conflict') || salesErr.code === '23505') {
+                        console.log('⚠️ Intentando inserción individual debido a conflictos...');
+                        
+                        for (const item of reportData) {
+                            try {
+                                await pool.query(
+                                    `INSERT INTO ventaxfamilia (ruta, cod_fam, descripcion, venta, coberturas, fecha)
+                                    VALUES ($1, $2, $3, $4, $5, CURRENT_TIMESTAMP)
+                                    ON CONFLICT (ruta, cod_fam, (fecha::date))
+                                    DO UPDATE SET 
+                                        venta = EXCLUDED.venta,
+                                        coberturas = EXCLUDED.coberturas,
+                                        descripcion = EXCLUDED.descripcion`,
+                                    [
+                                        id_ruta,
+                                        item.COD_FAM || 'SIN_CODIGO',
+                                        item.DESCRIPCION || 'Sin descripción',
+                                        parseFloat(item.VENTA || 0),
+                                        parseFloat(item.NUMERO_CLIENTES || 0)
+                                    ]
+                                );
+                            } catch (individualError) {
+                                console.error(`❌ Error inserción individual para ${item.COD_FAM}:`, individualError.message);
+                            }
+                        }
+                    }
+                }
             }
         }
 
