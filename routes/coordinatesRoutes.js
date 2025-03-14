@@ -53,17 +53,23 @@ router.post('/', async (req, res) => {
                     
                     // Versión simplificada sin ON CONFLICT
                     const values = reportData.map((_, i) => 
-                        `($${i * 5 + 1}, $${i * 5 + 2}, $${i * 5 + 3}, $${i * 5 + 4}, $${i * 5 + 5}, CURRENT_TIMESTAMP)`
+                        `($${i * 5 + 1}, $${i * 5 + 2}, $${i * 5 + 3}, $${i * 5 + 4}, $${i * 5 + 5}, $${i * 5 + 6}::timestamp)`
                     ).join(', ');
                     
                     const params = [];
+                    const formattedTimestamp = new Date().toISOString(); // Formato ISO estándar
+                    
                     reportData.forEach(item => {
                         params.push(
                             id_ruta,
                             item.COD_FAM || 'SIN_CODIGO',
                             item.DESCRIPCION || 'Sin descripción',
-                            parseFloat(item.VENTA || 0),
-                            parseFloat(item.NUMERO_CLIENTES || 0)
+                            // Guardar la venta como texto, no como número
+                            String(item.VENTA || '0'), 
+                            // Convertir coberturas a número
+                            parseFloat(item.NUMERO_CLIENTES || 0),
+                            // Usar el timestamp formateado
+                            formattedTimestamp
                         );
                     });
                     
@@ -80,52 +86,54 @@ router.post('/', async (req, res) => {
                     console.error('Detalle:', salesErr.detail || salesErr.message);
                     
                     // Si falla la inserción masiva, intentar insertar uno por uno
-                    if (salesErr.message.includes('conflict') || salesErr.code === '23505') {
-                        console.log('⚠️ Intentando inserción individual debido a conflictos...');
-                        
-                        for (const item of reportData) {
-                            try {
-                                // Verificar si ya existe un registro para esta ruta, código y fecha
-                                const currentDate = new Date().toISOString().split('T')[0];
-                                const checkExisting = await pool.query(
-                                    `SELECT id FROM ventaxfamilia 
-                                     WHERE ruta = $1 AND cod_fam = $2 AND DATE(fecha) = $3::date`,
-                                    [id_ruta, item.COD_FAM || 'SIN_CODIGO', currentDate]
+                    console.log('⚠️ Intentando inserción individual...');
+                    
+                    for (const item of reportData) {
+                        try {
+                            // Verificar si ya existe un registro para esta ruta, código y fecha
+                            const currentDate = new Date().toISOString().split('T')[0];
+                            const checkExisting = await pool.query(
+                                `SELECT id FROM ventaxfamilia 
+                                 WHERE ruta = $1 AND cod_fam = $2 AND DATE(fecha) = $3::date`,
+                                [id_ruta, item.COD_FAM || 'SIN_CODIGO', currentDate]
+                            );
+                            
+                            const formattedTimestamp = new Date().toISOString();
+                            
+                            if (checkExisting.rows.length > 0) {
+                                // Actualizar el registro existente
+                                const updateId = checkExisting.rows[0].id;
+                                await pool.query(
+                                    `UPDATE ventaxfamilia 
+                                     SET venta = $1, coberturas = $2, descripcion = $3, fecha = $4::timestamp
+                                     WHERE id = $5`,
+                                    [
+                                        String(item.VENTA || '0'), // Guardar como texto
+                                        parseFloat(item.NUMERO_CLIENTES || 0),
+                                        item.DESCRIPCION || 'Sin descripción',
+                                        formattedTimestamp,
+                                        updateId
+                                    ]
                                 );
-                                
-                                if (checkExisting.rows.length > 0) {
-                                    // Actualizar el registro existente
-                                    const updateId = checkExisting.rows[0].id;
-                                    await pool.query(
-                                        `UPDATE ventaxfamilia 
-                                         SET venta = $1, coberturas = $2, descripcion = $3, fecha = CURRENT_TIMESTAMP
-                                         WHERE id = $4`,
-                                        [
-                                            parseFloat(item.VENTA || 0),
-                                            parseFloat(item.NUMERO_CLIENTES || 0),
-                                            item.DESCRIPCION || 'Sin descripción',
-                                            updateId
-                                        ]
-                                    );
-                                    console.log(`🔄 Actualizado registro existente: Ruta ${id_ruta}, Código ${item.COD_FAM}`);
-                                } else {
-                                    // Insertar nuevo registro
-                                    await pool.query(
-                                        `INSERT INTO ventaxfamilia (ruta, cod_fam, descripcion, venta, coberturas, fecha)
-                                         VALUES ($1, $2, $3, $4, $5, CURRENT_TIMESTAMP)`,
-                                        [
-                                            id_ruta,
-                                            item.COD_FAM || 'SIN_CODIGO',
-                                            item.DESCRIPCION || 'Sin descripción',
-                                            parseFloat(item.VENTA || 0),
-                                            parseFloat(item.NUMERO_CLIENTES || 0)
-                                        ]
-                                    );
-                                    console.log(`➕ Insertado nuevo registro: Ruta ${id_ruta}, Código ${item.COD_FAM}`);
-                                }
-                            } catch (individualError) {
-                                console.error(`❌ Error inserción individual para ${item.COD_FAM}:`, individualError.message);
+                                console.log(`🔄 Actualizado registro existente: Ruta ${id_ruta}, Código ${item.COD_FAM}`);
+                            } else {
+                                // Insertar nuevo registro
+                                await pool.query(
+                                    `INSERT INTO ventaxfamilia (ruta, cod_fam, descripcion, venta, coberturas, fecha)
+                                     VALUES ($1, $2, $3, $4, $5, $6::timestamp)`,
+                                    [
+                                        id_ruta,
+                                        item.COD_FAM || 'SIN_CODIGO',
+                                        item.DESCRIPCION || 'Sin descripción',
+                                        String(item.VENTA || '0'), // Guardar como texto
+                                        parseFloat(item.NUMERO_CLIENTES || 0),
+                                        formattedTimestamp
+                                    ]
+                                );
+                                console.log(`➕ Insertado nuevo registro: Ruta ${id_ruta}, Código ${item.COD_FAM}`);
                             }
+                        } catch (individualError) {
+                            console.error(`❌ Error inserción individual para ${item.COD_FAM}:`, individualError.message);
                         }
                     }
                 }
