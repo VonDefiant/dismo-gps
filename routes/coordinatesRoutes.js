@@ -4,11 +4,29 @@ const pool = require('../db');
 
 // 📌 Ruta para insertar coordenadas y procesar tokens FCM
 router.post('/', async (req, res) => {
-    const { latitude, longitude, timestamp, isSuspicious, id_ruta, battery, token, reportData } = req.body;
+    const { 
+        latitude, 
+        longitude, 
+        timestamp, 
+        isSuspicious, 
+        id_ruta, 
+        battery, 
+        token, 
+        reportData,
+        suspiciousReason = '', 
+        isMoving = false, 
+        movementContext = '' 
+    } = req.body;
+    
     const deviceId = req.headers['device-id']; // 📌 Extraemos el GUID desde el header
     const ip = req.ip;
 
     console.log(`🔍 GUID recibido: ${deviceId} | Ruta: ${id_ruta} | Token: ${token || 'No enviado'}`);
+    
+    // Log adicional para monitorear datos de contexto de movimiento
+    if (isMoving !== undefined) {
+        console.log(`🚶 Estado de movimiento: ${isMoving ? 'En movimiento' : 'Detenido'} | Contexto: ${movementContext || 'N/A'}`);
+    }
     
     // Agregar log para datos del reporte
     if (reportData && Array.isArray(reportData)) {
@@ -36,12 +54,23 @@ router.post('/', async (req, res) => {
 
         if (autorizado === 'denegado') {
             console.log(`⚠️ Dispositivo NO autorizado: ${deviceId} | Ruta: ${id_ruta}`);
+            return res.status(403).json({ error: 'Dispositivo no autorizado para esta ruta' });
         } else {
             // 📌 Insertar coordenadas si el dispositivo está autorizado
             if (latitude !== undefined && longitude !== undefined && timestamp !== undefined) {
                 await pool.query(
-                    'INSERT INTO coordinates (latitude, longitude, timestamp, vpn_validation, id_ruta, battery) VALUES ($1, $2, $3, $4, $5, $6)',
-                    [latitude, longitude, timestamp, isSuspicious || false, id_ruta, battery || 0]
+                    'INSERT INTO coordinates (latitude, longitude, timestamp, vpn_validation, id_ruta, battery, suspicious_reason, is_moving, movement_context) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)',
+                    [
+                        latitude, 
+                        longitude, 
+                        timestamp, 
+                        isSuspicious || false, 
+                        id_ruta, 
+                        battery || 0, 
+                        suspiciousReason, 
+                        isMoving,       
+                        movementContext 
+                    ]
                 );
                 console.log(`✅ Coordenadas registradas | GUID: ${deviceId} | Ruta: ${id_ruta}`);
             }
@@ -190,7 +219,10 @@ router.post('/', async (req, res) => {
         res.status(201).json({ message: 'Datos procesados correctamente' });
     } catch (err) {
         console.error('❌ Error en el procesamiento:', err);
-        res.status(500).send('Error en el servidor');
+        res.status(500).json({ 
+            error: 'Error en el servidor',
+            details: process.env.NODE_ENV === 'development' ? err.message : undefined 
+        });
     }
 });
 
@@ -201,7 +233,7 @@ router.get('/tokens', async (req, res) => {
         res.json(result.rows);
     } catch (err) {
         console.error('❌ Error al obtener los tokens:', err);
-        res.status(500).send('Error al obtener los tokens');
+        res.status(500).json({ error: 'Error al obtener los tokens' });
     }
 });
 
@@ -209,7 +241,8 @@ router.get('/tokens', async (req, res) => {
 router.get('/latest-coordinates', async (req, res) => {
     try {
         const result = await pool.query(`
-            SELECT id, latitude, longitude, id_ruta, timestamp, vpn_validation, battery 
+            SELECT id, latitude, longitude, id_ruta, timestamp, vpn_validation, battery,
+                   suspicious_reason, is_moving, movement_context 
             FROM coordinates
             WHERE (id_ruta, timestamp) IN (
                 SELECT id_ruta, MAX(timestamp)
@@ -220,7 +253,7 @@ router.get('/latest-coordinates', async (req, res) => {
         res.json(result.rows);
     } catch (err) {
         console.error('❌ Error al obtener las coordenadas:', err);
-        res.status(500).send('Error al obtener las coordenadas');
+        res.status(500).json({ error: 'Error al obtener las coordenadas' });
     }
 });
 
@@ -232,7 +265,7 @@ router.get('/getUniqueRutas', async (req, res) => {
         res.json(rutas);
     } catch (err) {
         console.error('❌ Error al obtener los id_ruta:', err);
-        res.status(500).send('Error al obtener las rutas');
+        res.status(500).json({ error: 'Error al obtener las rutas' });
     }
 });
 
@@ -240,20 +273,26 @@ router.get('/getUniqueRutas', async (req, res) => {
 router.get('/reconstruirRecorrido', async (req, res) => {
     const { id_ruta, fecha } = req.query;
 
+    if (!id_ruta || !fecha) {
+        return res.status(400).json({ error: 'Se requieren los parámetros id_ruta y fecha' });
+    }
+
     console.log(`🔍 Consulta recibida para id_ruta: ${id_ruta} y fecha: ${fecha}`);
 
     try {
         const result = await pool.query(`
-            SELECT latitude, longitude, timestamp, vpn_validation, id_ruta, battery
+            SELECT latitude, longitude, timestamp, vpn_validation, id_ruta, battery,
+                   suspicious_reason, is_moving, movement_context
             FROM coordinates    
             WHERE id_ruta = $1 AND DATE(timestamp) = $2::date
+            ORDER BY timestamp ASC
         `, [id_ruta, fecha]);
 
-        console.log(`📊 Resultado de la consulta: ${JSON.stringify(result.rows)}`);
+        console.log(`📊 Resultado de la consulta: ${result.rows.length} registros encontrados`);
         res.json(result.rows);
     } catch (err) {
         console.error('❌ Error al obtener las coordenadas:', err);
-        res.status(500).send('Error al obtener las coordenadas');
+        res.status(500).json({ error: 'Error al obtener las coordenadas' });
     }
 });
 
@@ -261,18 +300,20 @@ router.get('/reconstruirRecorrido', async (req, res) => {
 router.get('/all-latest', async (req, res) => {
     try {
         const result = await pool.query(`
-            SELECT id, latitude, longitude, id_ruta, timestamp, vpn_validation, battery 
+            SELECT id, latitude, longitude, id_ruta, timestamp, vpn_validation, battery,
+                   suspicious_reason, is_moving, movement_context 
             FROM coordinates
             WHERE (id_ruta, timestamp) IN (
                 SELECT id_ruta, MAX(timestamp)
                 FROM coordinates
                 GROUP BY id_ruta
-            );
+            )
+            ORDER BY id_ruta ASC;
         `);
         res.json(result.rows);
     } catch (err) {
         console.error('❌ Error al obtener las coordenadas:', err);
-        res.status(500).send('Error al obtener las coordenadas');
+        res.status(500).json({ error: 'Error al obtener las coordenadas' });
     }
 });
 

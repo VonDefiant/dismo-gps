@@ -14,7 +14,6 @@ document.addEventListener('DOMContentLoaded', function() {
      // Token de Mapbox
      const mapboxToken = 'pk.eyJ1Ijoidm9uZGVmaWFudCIsImEiOiJjbTg0ejg0czEyNWNiMm5vb3JlbGhrMG5rIn0.Dj_dcfqOceb51BSzXtIGJg';
 
-    
     const mapboxStreets = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=' + mapboxToken, {
         attribution: '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a>',
         maxZoom: 22,
@@ -29,7 +28,6 @@ document.addEventListener('DOMContentLoaded', function() {
         zoomOffset: -1
     });
     
-
     const googleSatellite = L.gridLayer.googleMutant({
         type: 'satellite',  // Vista satelital de Google
         attribution: '© Google Maps'
@@ -65,7 +63,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Añadir control de escala
     L.control.scale({
-        imperial: false,  // Solo mostrar escala métrica
+        imperial: false, 
         position: 'bottomleft'
     }).addTo(map);
 
@@ -96,7 +94,7 @@ document.addEventListener('DOMContentLoaded', function() {
     lastUpdateDiv.style.boxShadow = '0 2px 5px rgba(0, 0, 0, 0.3)';
     lastUpdateDiv.style.fontSize = '0.9em';
     lastUpdateDiv.style.color = '#333';
-    lastUpdateDiv.style.zIndex = '1000'; // Asegúrate de que esté encima del mapa
+    lastUpdateDiv.style.zIndex = '1000'; 
     lastUpdateDiv.textContent = 'Última actualización: Nunca';
     document.body.appendChild(lastUpdateDiv);
 
@@ -110,34 +108,44 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Fetch de las últimas coordenadas
         fetch('/coordinates/latest-coordinates')
-            .then(response => response.json())
-            .then(data => {
-                const now = new Date();
-                lastUpdateDiv.textContent = `Última actualización: ${now.toLocaleString()}`;
-                data.forEach(coord => {
-                    // Dividir el timestamp en fecha y hora
-                    const [datePart, timePart] = coord.timestamp.split('T');
-                    const [year, month, day] = datePart.split('-'); // Extraer año, mes y día
-                    const formattedDate = `${day}/${month}/${year}`; // Formato DD/MM/YYYY
-                    const formattedTime = timePart.split('.')[0]; // Elimina los milisegundos y la zona horaria
-
-                    // Redondear el valor de la batería a un número entero
-                    const batteryLevel = Math.round(coord.battery);
-
-                    // Crear el marcador con el ícono personalizado y añadirlo al mapa
-                    const marker = L.marker([coord.latitude, coord.longitude], { icon: customIcon }).addTo(map);
-                    marker.bindPopup(`
-                        <strong>Ruta: ${coord.id_ruta}</strong><br>
-                        Latitude: ${coord.latitude}<br>
-                        Longitud: ${coord.longitude}<br>
-                        Fecha y hora: ${formattedDate}, ${formattedTime}<br>
-                        Batería: ${batteryLevel}%<br>
-                        VPN activo: ${coord.vpn_validation ? 'No' : 'No'}
-                    `);
-                    
-                });
-            })
-            .catch(err => console.error('Error al cargar las coordenadas', err));
+        .then(response => response.json())
+        .then(data => {
+            const now = new Date();
+            lastUpdateDiv.textContent = `Última actualización: ${now.toLocaleString()}`;
+            data.forEach(coord => {
+                // Dividir el timestamp en fecha y hora
+                const [datePart, timePart] = coord.timestamp.split('T');
+                const [year, month, day] = datePart.split('-'); 
+                const formattedDate = `${day}/${month}/${year}`; 
+                const formattedTime = timePart.split('.')[0]; 
+    
+                // Redondear el valor de la batería a un número entero
+                const batteryLevel = Math.round(coord.battery);
+    
+                // Preparar información sobre movimiento y contexto
+                const movementStatus = coord.is_moving ? 'En movimiento' : 'Detenido';
+                const movementContext = coord.movement_context ? coord.movement_context : 'No disponible';
+                
+                // Preparar información sobre VPN/ubicación real
+                const locationStatus = coord.vpn_validation ? 'No' : 'Sí';
+                const suspiciousReason = coord.suspicious_reason ? 
+                    `<br>Motivo: ${coord.suspicious_reason}` : '';
+    
+                // Crear el marcador con el ícono personalizado y añadirlo al mapa
+                const marker = L.marker([coord.latitude, coord.longitude], { icon: customIcon }).addTo(map);
+                marker.bindPopup(`
+                    <strong>Ruta: ${coord.id_ruta}</strong><br>
+                    Latitude: ${coord.latitude}<br>
+                    Longitud: ${coord.longitude}<br>
+                    Fecha y hora: ${formattedDate}, ${formattedTime}<br>
+                    Batería: ${batteryLevel}%<br>
+                    Ubicación Falsa: ${locationStatus}${suspiciousReason}<br>
+                    Estado: ${movementStatus}<br>
+                    Contexto: ${movementContext}
+                `);
+            });
+        })
+        .catch(err => console.error('Error al cargar las coordenadas', err));
     }
 
     // Función para limpiar todos los marcadores actuales en el mapa
@@ -153,7 +161,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function startUpdating() {
         console.log("Iniciando la actualización automática de las últimas ubicaciones.");
         updateMarkers(); // Llamar una vez para la primera actualización
-        updateInterval = setInterval(updateMarkers, 60000);  // Actualizar los marcadores cada 30 segundos
+        updateInterval = setInterval(updateMarkers, 60000);  
     }
 
     // Función para detener el intervalo de actualización

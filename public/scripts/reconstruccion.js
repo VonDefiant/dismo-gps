@@ -87,6 +87,15 @@ document.addEventListener('DOMContentLoaded', function() {
                                         const formattedTime = timePart.split('.')[0];
                                         const batteryLevel = Math.round(coordinate.battery);
 
+                                        // Preparar información sobre movimiento y contexto
+                                        const movementStatus = coordinate.is_moving ? 'En movimiento' : 'Detenido';
+                                        const movementContext = coordinate.movement_context ? coordinate.movement_context : 'No disponible';
+                                        
+                                        // Preparar información sobre VPN/ubicación real
+                                        const vpnStatus = coordinate.vpn_validation === 'true' || coordinate.vpn_validation === true ? 'Sí' : 'No';
+                                        const suspiciousReason = coordinate.suspicious_reason ? 
+                                            `<br>Motivo: ${coordinate.suspicious_reason}` : '';
+
                                         try {
                                             const marker = L.marker([lat, lng], { icon: customIcon }).addTo(map);
 
@@ -96,7 +105,9 @@ document.addEventListener('DOMContentLoaded', function() {
                                                 Longitud: ${coordinate.longitude}<br>
                                                 Fecha y hora: ${formattedDate}, ${formattedTime}<br>
                                                 Batería: ${batteryLevel}%<br>
-                                                VPN activo: ${coordinate.vpn_validation === 'true' ? 'Sí' : 'No'}
+                                                Ubicación Falsa: ${vpnStatus}${suspiciousReason}<br>
+                                                Estado: ${movementStatus}<br>
+                                                Contexto: ${movementContext}
                                             `);
 
                                             markers.push(marker);
@@ -111,7 +122,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 }
                             });
                         })
-                        .catch(error => console.error('Error al reconstruir el recorrido:', error));
+                        .catch(error => console.error('Error al reconstruir el recorrido:', error)  );
                 });
             })
             .catch(error => console.error('Error al cargar el menú de reconstrucción:', error));
