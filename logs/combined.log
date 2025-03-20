@@ -609,3 +609,8 @@
 2025-03-19 18:21:19 [INFO] Firebase inicializado con credenciales desde variable de entorno 
 2025-03-19 18:22:19 [INFO] 🟢 Intentando iniciar sesión para: admin 
 2025-03-19 18:22:20 [INFO] ✅ Sesión iniciada para admin (Admin: true) 
+2025-03-19 19:50:28 [INFO] Firebase inicializado con credenciales desde variable de entorno 
+2025-03-19 19:51:50 [INFO] 🟢 Intentando iniciar sesión para: admin 
+2025-03-19 19:51:51 [INFO] ✅ Sesión iniciada para admin (Admin: true) 
+2025-03-19 20:31:15 [INFO] Enviando mensaje con estructura: {"token":"cSPYzhYvROaTzdG2N8M7pS:APA91bG-rmyMfK7MZwGzNwhoPjOF1sfLT4DISqKJ_fQrVnbOp1O64JBrL5r657NuRVx-1_V_52nUCU_Udt4rKjmjLx1Z10_yd-iX-9U5GbVitx94TawFUJI","data":{"title":"DISMOGT REPORTES","body":"No vendas para cerrar una transacción, vende para abrir una relación.","tipo":"location_update","action":"SYNC_DATA","ruta":"G402","timestamp":"2025-03-20T02:31:15.837Z"}} 
+2025-03-19 20:31:16 [INFO] Notificación enviada con éxito: projects/dismogt-a30ec/messages/0:1742437877303643%75dd1363f9fd7ecd 
