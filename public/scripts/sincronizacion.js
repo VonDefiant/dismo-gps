@@ -109,13 +109,25 @@ document.addEventListener("DOMContentLoaded", function() {
                 // Llenar la tabla con los datos
                 data.forEach(item => {
                     const row = document.createElement('tr');
-                    
-                    // Formatear la fecha y hora
-                    const fecha = item.last_timestamp ? new Date(item.last_timestamp) : null;
-                    const fechaFormateada = fecha ? 
-                        `${fecha.toLocaleDateString()} ${fecha.toLocaleTimeString()}` : 
-                        'Nunca';
-                    
+                
+                    // Función para formatear la fecha manualmente (sin cambiar la zona horaria)
+                    function formatearFechaISO(fechaISO) {
+                        if (!fechaISO) return 'Nunca';
+                
+                        const [fecha, hora] = fechaISO.split('T');
+                        const [anio, mes, dia] = fecha.split('-');
+                        const [horas, minutos, segundos] = hora.split(':');
+                
+                        let horas12 = parseInt(horas, 10);
+                        const ampm = horas12 >= 12 ? 'PM' : 'AM';
+                        horas12 = horas12 % 12 || 12; // Convertir a formato 12 horas
+                
+                        return `${dia}/${mes}/${anio} ${horas12}:${minutos}:${segundos.slice(0, 2)} ${ampm}`;
+                    }
+                
+                    // Formatear la fecha para cada item
+                    const fechaFormateada = item.last_timestamp ? formatearFechaISO(item.last_timestamp) : 'Nunca';
+                
                     row.innerHTML = `
                         <td>${item.id_ruta}</td>
                         <td>${fechaFormateada}</td>
@@ -125,9 +137,10 @@ document.addEventListener("DOMContentLoaded", function() {
                             </button>
                         </td>
                     `;
-                    
+                
                     tbody.appendChild(row);
                 });
+                
                 
                 // Añadir event listeners a los botones de sincronización
                 document.querySelectorAll('.sincronizar-btn').forEach(btn => {

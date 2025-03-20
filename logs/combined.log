@@ -603,3 +603,9 @@
 2025-03-14 17:21:04 [INFO] Firebase inicializado con credenciales desde variable de entorno 
 2025-03-14 17:21:17 [INFO] 🟢 Intentando iniciar sesión para: admin 
 2025-03-14 17:21:17 [INFO] ✅ Sesión iniciada para admin (Admin: true) 
+2025-03-19 12:22:15 [INFO] Firebase inicializado con credenciales desde variable de entorno 
+2025-03-19 12:22:50 [INFO] 🟢 Intentando iniciar sesión para: admin 
+2025-03-19 12:22:51 [INFO] ✅ Sesión iniciada para admin (Admin: true) 
+2025-03-19 18:21:19 [INFO] Firebase inicializado con credenciales desde variable de entorno 
+2025-03-19 18:22:19 [INFO] 🟢 Intentando iniciar sesión para: admin 
+2025-03-19 18:22:20 [INFO] ✅ Sesión iniciada para admin (Admin: true) 
