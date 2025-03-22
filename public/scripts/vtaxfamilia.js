@@ -51,32 +51,54 @@ document.addEventListener('DOMContentLoaded', function () {
                             return;
                         }
 
-                        fetch(`/sales/query?ruta=${idRuta}&fecha=${fechaSeleccionada}`)
-                            .then(response => {
-                                if (!response.ok) {
-                                    throw new Error('Error en la respuesta del servidor');
-                                }
-                                return response.json();
-                            })
-                            .then(data => {
-                                if (!Array.isArray(data) || data.length === 0) {
-                                    alert('No se encontraron resultados.');
-                                    return;
-                                }
-
-                                mostrarResultadosRectangulares(container, idRuta, fechaSeleccionada, data);
-                            })
-                            .catch(error => {
-                                console.error('Error al consultar las ventas:', error);
-                                alert('Ocurrió un error al consultar las ventas. Por favor, inténtalo más tarde.');
-                            });
+                        // Realizar dos consultas en paralelo
+                        Promise.all([
+                            // 1. Consulta de ventas por familia
+                            fetch(`/sales/query?ruta=${idRuta}&fecha=${fechaSeleccionada}`)
+                                .then(response => {
+                                    if (!response.ok) {
+                                        throw new Error('Error en la respuesta del servidor');
+                                    }
+                                    return response.json();
+                                }),
+                            
+                            // 2. Consulta del total de clientes usando el endpoint existente
+                            fetch(`/sales/total_clientes?ruta=${idRuta}&fecha=${fechaSeleccionada}`)
+                                .then(response => {
+                                    if (!response.ok) {
+                                        throw new Error('Error al obtener total de clientes');
+                                    }
+                                    return response.json();
+                                })
+                                .catch(error => {
+                                    console.error('Error al obtener total_clientes:', error);
+                                    // Si hay error, devolver un objeto con total 0
+                                    return { total: 0 };
+                                })
+                        ])
+                        .then(([ventasData, totalClientesData]) => {
+                            if (!Array.isArray(ventasData) || ventasData.length === 0) {
+                                alert('No se encontraron resultados de ventas.');
+                                return;
+                            }
+                            
+                            // Obtener el valor total de clientes
+                            const totalClientes = totalClientesData.total || 0;
+                            
+                            // Mostrar los resultados
+                            mostrarResultadosRectangulares(container, idRuta, fechaSeleccionada, ventasData, totalClientes);
+                        })
+                        .catch(error => {
+                            console.error('Error en las consultas:', error);
+                            alert('Ocurrió un error al consultar los datos. Por favor, inténtalo más tarde.');
+                        });
                     });
                 }
             })
             .catch(error => console.error('Error al cargar el menú de reconstrucción:', error));
     });
 
-    function mostrarResultadosRectangulares(container, idRuta, fechaSeleccionada, data) {
+    function mostrarResultadosRectangulares(container, idRuta, fechaSeleccionada, data, totalClientes) {
         const modalContent = container.querySelector('.modal-content');
         if (modalContent) {
             modalContent.innerHTML = '';
@@ -90,29 +112,57 @@ document.addEventListener('DOMContentLoaded', function () {
             modalContent.appendChild(infoHeader);
 
             const tabla = document.createElement('table');
+            tabla.style.width = '100%';
+            tabla.style.borderCollapse = 'collapse';
 
             const thead = document.createElement('thead');
             thead.innerHTML = `
                 <tr>
-                    <th>Cod_Fam</th>
-                    <th>Descripción</th>
-                    <th>Venta</th>
-                    <th>Coberturas</th>
+                    <th style="background-color: #fab925; color: white;">Cod_Fam</th>
+                    <th style="background-color: #fab925; color: white;">Descripción</th>
+                    <th style="background-color: #fab925; color: white;">Venta</th>
+                    <th style="background-color: #fab925; color: white;">Coberturas</th>
                 </tr>
             `;
             tabla.appendChild(thead);
 
             const tbody = document.createElement('tbody');
-            data.forEach(row => {
+            
+            // Variable para calcular el total de ventas
+            let totalVentas = 0;
+
+            data.forEach((row, index) => {
                 const fila = document.createElement('tr');
+                fila.style.backgroundColor = index % 2 === 0 ? '#1d3f7d' : '#2a4e8c';
+                fila.style.color = 'white';
+                
+                // Extraer valor numérico de la venta
+                const ventaStr = row.venta || 'Q 0';
+                const ventaNum = parseFloat(ventaStr.replace('Q ', '').replace(',', '.')) || 0;
+                totalVentas += ventaNum;
+                
                 fila.innerHTML = `
-                    <td>${row.cod_fam}</td>
-                    <td>${row.descripcion}</td>
-                    <td>${row.venta}</td>
-                    <td>${row.coberturas !== null ? row.coberturas : 'N/A'}</td>
+                    <td style="border: 1px solid white; padding: 8px; text-align: center;">${row.cod_fam}</td>
+                    <td style="border: 1px solid white; padding: 8px; text-align: center;">${row.descripcion}</td>
+                    <td style="border: 1px solid white; padding: 8px; text-align: center;">${row.venta}</td>
+                    <td style="border: 1px solid white; padding: 8px; text-align: center;">${row.coberturas !== null ? row.coberturas : '0'}</td>
                 `;
                 tbody.appendChild(fila);
             });
+            
+            // Agregar fila de totales
+            const totalRow = document.createElement('tr');
+            totalRow.style.backgroundColor = '#ffb300';
+            totalRow.style.color = 'white';
+            totalRow.style.fontWeight = 'bold';
+            
+            totalRow.innerHTML = `
+                <td style="border: 1px solid white; padding: 8px; text-align: center;" colspan="2">SUMA TOTAL</td>
+                <td style="border: 1px solid white; padding: 8px; text-align: center;">Q ${totalVentas.toFixed(2)}</td>
+                <td style="border: 1px solid white; padding: 8px; text-align: center;">${totalClientes}</td>
+            `;
+            tbody.appendChild(totalRow);
+            
             tabla.appendChild(tbody);
             modalContent.appendChild(tabla);
 
@@ -120,6 +170,14 @@ document.addEventListener('DOMContentLoaded', function () {
             const closeBtn = document.createElement('button');
             closeBtn.textContent = 'Cerrar';
             closeBtn.className = 'cerrarResultadosBtn'; // Reutilizar el estilo existente
+            closeBtn.style.marginTop = '20px';
+            closeBtn.style.backgroundColor = '#f44336';
+            closeBtn.style.color = 'white';
+            closeBtn.style.padding = '10px 20px';
+            closeBtn.style.border = 'none';
+            closeBtn.style.borderRadius = '5px';
+            closeBtn.style.cursor = 'pointer';
+            
             closeBtn.addEventListener('click', function () {
                 container.style.display = 'none';
             });

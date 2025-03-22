@@ -614,3 +614,16 @@
 2025-03-19 19:51:51 [INFO] ✅ Sesión iniciada para admin (Admin: true) 
 2025-03-19 20:31:15 [INFO] Enviando mensaje con estructura: {"token":"cSPYzhYvROaTzdG2N8M7pS:APA91bG-rmyMfK7MZwGzNwhoPjOF1sfLT4DISqKJ_fQrVnbOp1O64JBrL5r657NuRVx-1_V_52nUCU_Udt4rKjmjLx1Z10_yd-iX-9U5GbVitx94TawFUJI","data":{"title":"DISMOGT REPORTES","body":"No vendas para cerrar una transacción, vende para abrir una relación.","tipo":"location_update","action":"SYNC_DATA","ruta":"G402","timestamp":"2025-03-20T02:31:15.837Z"}} 
 2025-03-19 20:31:16 [INFO] Notificación enviada con éxito: projects/dismogt-a30ec/messages/0:1742437877303643%75dd1363f9fd7ecd 
+2025-03-20 08:55:09 [INFO] Firebase inicializado con credenciales desde variable de entorno 
+2025-03-20 08:55:42 [INFO] 🟢 Intentando iniciar sesión para: admin 
+2025-03-20 08:55:43 [INFO] ✅ Sesión iniciada para admin (Admin: true) 
+2025-03-20 08:58:16 [INFO] Firebase inicializado con credenciales desde variable de entorno 
+2025-03-20 08:58:22 [INFO] 🟢 Intentando iniciar sesión para: admin 
+2025-03-20 08:58:22 [INFO] ✅ Sesión iniciada para admin (Admin: true) 
+2025-03-20 10:20:06 [INFO] Enviando mensaje con estructura: {"token":"cSPYzhYvROaTzdG2N8M7pS:APA91bG-rmyMfK7MZwGzNwhoPjOF1sfLT4DISqKJ_fQrVnbOp1O64JBrL5r657NuRVx-1_V_52nUCU_Udt4rKjmjLx1Z10_yd-iX-9U5GbVitx94TawFUJI","data":{"title":"DISMOGT REPORTES","body":"No vendas para cerrar una transacción, vende para abrir una relación.","tipo":"location_update","action":"SYNC_DATA","ruta":"G402","timestamp":"2025-03-20T16:20:06.447Z"}} 
+2025-03-20 10:20:07 [INFO] Enviando mensaje con estructura: {"token":"eCBAlpWvR_SEzUfVj_3XGI:APA91bH_TUxKZ0IZWdsBiORXVKeH_ryzF6MA1_ij262254mU046SOMdSN6u28NG_Tf5DkIfrfZaseS3h1rTHEEMHsMq4uRVUBqOQmi5J1T3bq32r8obpzcA","data":{"title":"DISMOGT REPORTES","body":"No vendas para cerrar una transacción, vende para abrir una relación.","tipo":"location_update","action":"SYNC_DATA","ruta":"G417","timestamp":"2025-03-20T16:20:07.324Z"}} 
+2025-03-20 10:20:07 [INFO] Notificación enviada con éxito: projects/dismogt-a30ec/messages/0:1742487608546856%75dd1363f9fd7ecd 
+2025-03-20 10:20:07 [INFO] Notificación enviada con éxito: projects/dismogt-a30ec/messages/0:1742487608835401%75dd1363f9fd7ecd 
+2025-03-21 10:14:13 [INFO] Firebase inicializado con credenciales desde variable de entorno 
+2025-03-21 10:16:36 [INFO] 🟢 Intentando iniciar sesión para: admin 
+2025-03-21 10:16:37 [INFO] ✅ Sesión iniciada para admin (Admin: true) 

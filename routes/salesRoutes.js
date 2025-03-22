@@ -76,6 +76,33 @@ router.get('/query', async (req, res) => {
     }
 });
 
+// Ruta para obtener total de clientes por ruta y fecha
+router.get('/total_clientes', async (req, res) => {
+    const { ruta, fecha } = req.query;
+
+    if (!ruta || !fecha) {
+        return res.status(400).json({ error: 'Faltan parámetros: ruta o fecha.' });
+    }
+
+    try {
+        const query = `
+            SELECT ruta, total, fecha
+            FROM total_clientes
+            WHERE ruta = $1 AND DATE(fecha) = $2
+            ORDER BY fecha DESC
+            LIMIT 1;
+        `;
+
+        const values = [ruta, fecha];
+        const result = await pool.query(query, values);
+
+        res.status(200).json(result.rows[0] || { total: 0 });
+    } catch (err) {
+        console.error('Error al consultar total de clientes:', err.message);
+        res.status(500).json({ error: 'Error al consultar datos en la base de datos.' });
+    }
+});
+
 // Ruta GET para obtener los id_ruta únicos
 router.get('/getUniqueRutasvta', async (req, res) => {
     try {
