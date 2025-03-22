@@ -627,3 +627,12 @@
 2025-03-21 10:14:13 [INFO] Firebase inicializado con credenciales desde variable de entorno 
 2025-03-21 10:16:36 [INFO] 🟢 Intentando iniciar sesión para: admin 
 2025-03-21 10:16:37 [INFO] ✅ Sesión iniciada para admin (Admin: true) 
+2025-03-21 10:23:01 [INFO] Firebase inicializado con credenciales desde variable de entorno 
+2025-03-21 10:23:53 [INFO] 🟢 Intentando iniciar sesión para: admin 
+2025-03-21 10:23:54 [INFO] ✅ Sesión iniciada para admin (Admin: true) 
+2025-03-21 11:52:42 [INFO] Enviando mensaje con estructura: {"token":"cSPYzhYvROaTzdG2N8M7pS:APA91bG-rmyMfK7MZwGzNwhoPjOF1sfLT4DISqKJ_fQrVnbOp1O64JBrL5r657NuRVx-1_V_52nUCU_Udt4rKjmjLx1Z10_yd-iX-9U5GbVitx94TawFUJI","data":{"title":"DISMOGT REPORTES","body":"No vendas para cerrar una transacción, vende para abrir una relación.","tipo":"location_update","action":"SYNC_DATA","ruta":"G402","timestamp":"2025-03-21T17:52:42.319Z"}} 
+2025-03-21 11:52:42 [INFO] Enviando mensaje con estructura: {"token":"eCBAlpWvR_SEzUfVj_3XGI:APA91bH_TUxKZ0IZWdsBiORXVKeH_ryzF6MA1_ij262254mU046SOMdSN6u28NG_Tf5DkIfrfZaseS3h1rTHEEMHsMq4uRVUBqOQmi5J1T3bq32r8obpzcA","data":{"title":"DISMOGT REPORTES","body":"No vendas para cerrar una transacción, vende para abrir una relación.","tipo":"location_update","action":"SYNC_DATA","ruta":"G417","timestamp":"2025-03-21T17:52:42.322Z"}} 
+2025-03-21 11:52:42 [INFO] Enviando mensaje con estructura: {"token":"eXC7XlBDSaSrgF42viGDh3:APA91bGvefL4Ido3K1EeJ74IAE2bzqGjouvoNHwAqGIblejJotljgkEmdZSeDyqdBVOomzceIRMX2JNU6vXzoGbFItjzmaor9syxYltdZKj1FPvHlgABW1g","data":{"title":"DISMOGT REPORTES","body":"No vendas para cerrar una transacción, vende para abrir una relación.","tipo":"location_update","action":"SYNC_DATA","ruta":"PRUEBA","timestamp":"2025-03-21T17:52:42.322Z"}} 
+2025-03-21 11:52:43 [INFO] Notificación enviada con éxito: projects/dismogt-a30ec/messages/0:1742579563618103%75dd1363f9fd7ecd 
+2025-03-21 11:52:43 [INFO] Notificación enviada con éxito: projects/dismogt-a30ec/messages/0:1742579563615639%75dd1363f9fd7ecd 
+2025-03-21 11:52:43 [INFO] Notificación enviada con éxito: projects/dismogt-a30ec/messages/0:1742579563704609%75dd1363f9fd7ecd 
