@@ -29,8 +29,32 @@ router.post('/', async (req, res) => {
     }
     
     // Agregar log para datos del reporte
-    if (reportData && Array.isArray(reportData)) {
-        console.log(`📊 Datos de ventas recibidos: ${reportData.length} registros`);
+    if (reportData && Array.isArray(reportData) && reportData.length > 0) {
+        console.log(`\n📊 DATOS DE VENTAS RECIBIDOS PARA RUTA: ${id_ruta}`);
+        console.log(`----------------------------------------------`);
+        
+        // Imprimir encabezados
+        console.log(`COD_FAM | DESCRIPCION                    | VENTA       | COBERTURAS`);
+        console.log(`--------+--------------------------------+-------------+-----------`);
+        
+        // Imprimir cada fila de datos
+        reportData.forEach(item => {
+            const cod = (item.COD_FAM || 'N/A').padEnd(6);
+            const desc = (item.DESCRIPCION || 'Sin descripción').substring(0, 30).padEnd(30);
+            const venta = (item.VENTA || 'Q 0').padEnd(11);
+            const coberturas = (item.NUMERO_CLIENTES || '0').toString().padEnd(5);
+            
+            console.log(`${cod} | ${desc} | ${venta} | ${coberturas}`);
+        });
+        
+        console.log(`--------+--------------------------------+-------------+-----------`);
+        
+        // Mostrar el total de clientes al final
+        if (reportData[0] && reportData[0].TotalClientes) {
+            console.log(`TOTAL CLIENTES: ${reportData[0].TotalClientes}`);
+        }
+        
+        console.log(`----------------------------------------------\n`);
     }
 
     if (!deviceId) {
