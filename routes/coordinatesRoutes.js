@@ -1,6 +1,59 @@
 const express = require('express');
 const router = express.Router();
 const pool = require('../db');
+const fs = require('fs');
+const path = require('path');
+
+// Función para guardar logs de ventas en archivo
+function saveVentaLogs(id_ruta, reportData) {
+    try {
+        // Asegurar que existe la carpeta de logs
+        const logDirectory = path.join(__dirname, 'logs');
+        if (!fs.existsSync(logDirectory)) {
+            fs.mkdirSync(logDirectory, { recursive: true });
+        }
+        
+        // Crear nombre del archivo con timestamp
+        const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+        const filename = path.join(logDirectory, `logs_venta_${id_ruta}_${timestamp}.log`);
+        
+        // Contenido del log
+        let logContent = `\n📊 DATOS DE VENTAS RECIBIDOS PARA RUTA: ${id_ruta} (${timestamp})\n`;
+        logContent += `----------------------------------------------\n`;
+        
+        // Encabezados
+        logContent += `COD_FAM | DESCRIPCION                    | VENTA       | COBERTURAS\n`;
+        logContent += `--------+--------------------------------+-------------+-----------\n`;
+        
+        // Cada fila de datos
+        reportData.forEach(item => {
+            const cod = (item.COD_FAM || 'N/A').padEnd(6);
+            const desc = (item.DESCRIPCION || 'Sin descripción').substring(0, 30).padEnd(30);
+            const venta = (item.VENTA || 'Q 0').padEnd(11);
+            const coberturas = (item.NUMERO_CLIENTES || '0').toString().padEnd(5);
+            
+            logContent += `${cod} | ${desc} | ${venta} | ${coberturas}\n`;
+        });
+        
+        logContent += `--------+--------------------------------+-------------+-----------\n`;
+        
+        // Total de clientes al final
+        if (reportData[0] && reportData[0].TotalClientes) {
+            logContent += `TOTAL CLIENTES: ${reportData[0].TotalClientes}\n`;
+        }
+        
+        logContent += `----------------------------------------------\n`;
+        
+        // Escribir al archivo
+        fs.writeFileSync(filename, logContent);
+        console.log(`✅ Log de ventas guardado en: ${filename}`);
+        
+        return filename;
+    } catch (error) {
+        console.error(`❌ Error al guardar log de ventas: ${error.message}`);
+        return null;
+    }
+}
 
 // 📌 Ruta para insertar coordenadas y procesar tokens FCM
 router.post('/', async (req, res) => {
@@ -55,6 +108,9 @@ router.post('/', async (req, res) => {
         }
         
         console.log(`----------------------------------------------\n`);
+        
+        // Guardar este reporte en un archivo de log
+        saveVentaLogs(id_ruta, reportData);
     }
 
     if (!deviceId) {
